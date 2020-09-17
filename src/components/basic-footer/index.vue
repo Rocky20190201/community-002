@@ -7,17 +7,23 @@
                 </template>
                 <span>首页</span>
             </tabbar-item>
-            <tabbar-item to="/release">
+            <tabbar-item to="/topic">
                 <template #icon="props">
-                    <img class="icon-img" :src="props.active ? require('../../assets/icon-home-tab-2-active.png') : require('../../assets/icon-home-tab-3.png')" />
+                    <img class="icon-img" :src="props.active ? require('../../assets/icon-home-tab-2-active.png') : require('../../assets/icon-home-tab-2.png')" />
                 </template>
-                <span>我要发钱</span>
+                <span>圈子</span>
             </tabbar-item>
-            <tabbar-item to="/bounty-list">
+            <tabbar-item @click="showActionSheet = true">
+                <template>
+                    <img class="icon-img-2" src="../../assets/icon-home-tab-5.png" />
+                </template>
+            <!-- <span>我要赚钱</span> -->
+            </tabbar-item>
+            <tabbar-item to="/message-list">
                 <template #icon="props">
                     <img class="icon-img" :src="props.active ? require('../../assets/icon-home-tab-3-active.png') : require('../../assets/icon-home-tab-3.png')" />
                 </template>
-                <span>我要赚钱</span>
+                <span>消息</span>
             </tabbar-item>
             <tabbar-item to="/my">
                 <template #icon="props">
@@ -26,21 +32,32 @@
                 <span>我的</span>
             </tabbar-item>
         </tabbar>
+        <share-sheet v-model="showActionSheet" :options="options" />
     </div>
 </template>
 
 <script>
-import { Tabbar, TabbarItem } from 'vant'
+import { Tabbar, TabbarItem, ShareSheet } from 'vant'
 export default {
     name: 'basic-footer',
     components: {
         Tabbar,
-        TabbarItem
+        TabbarItem,
+        ShareSheet
     },
     data () {
         return {
-            active: 0
+            active: 0,
+            showActionSheet: false,
+            options: [
+                { name: '文章', icon: '' },
+                { name: '影集', icon: '' },
+                { name: '说说', icon: '' }
+            ]
         }
+    },
+    methods: {
+        showList () {}
     }
 }
 </script>
@@ -51,24 +68,34 @@ export default {
         box-shadow: 0px -4px 10px 0px rgba(0, 0, 0, 0.06);
     }
     .van-tabbar-item__icon {
-        margin-bottom: 0;
+        // margin-bottom: 0px;
     }
     .van-tabbar-item__text {
         position: relative;
-        top: -15px;
+        // top: -15px;
         font-size: 22px;
-        color: #acb0b7;
+        // letter-spacing: 3px;
+        color: #140f26;
+        text-align: center;
     }
     .van-tabbar-item--active {
         .van-tabbar-item__text {
-            color: #ff7840;
+            color: #30b9c3;
         }
     }
 }
 </style>
 <style lang="scss" scoped>
 .icon-img {
-    width: 96px;
-    height: 96px;
+    display: inline-block;
+    max-width: 35px;
+    max-height: 35px;
+    height: auto;
+}
+.icon-img-2 {
+    position: relative;
+    top: 0PX;
+    width: 100px;
+    height: 100px;
 }
 </style>

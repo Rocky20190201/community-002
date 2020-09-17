@@ -1,22 +1,44 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-// import AV from 'leancloud-storage'
+import AV from 'leancloud-storage'
 // import { Toast } from 'vant'
 
-// const authFilter = (to, from, next) => {
-//     if (AV.User.current()) {
-//         next()
-//     } else {
-//         next({
-//             path: '/login'
-//         })
-//     }
-// }
+const authFilter = (to, from, next) => {
+    if (!AV.User.current()) {
+        next()
+    } else {
+        next({
+            path: '/login'
+        })
+    }
+}
 
 const routes = [
     {
         path: '/',
         redirect: '/home'
+    },
+    {
+        path: '/home',
+        name: 'Home',
+        component: () => import('../views/Home.vue')
+    },
+    {
+        path: '/topic',
+        name: 'tpic',
+        component: () => import('../views/Topic.vue')
+    },
+    {
+        path: '/message-list',
+        name: 'MessageList',
+        component: () => import('../views/MessageList.vue'),
+        beforeEnter: authFilter
+    },
+    {
+        path: '/my',
+        name: 'My',
+        component: () => import('../views/My.vue'),
+        beforeEnter: authFilter
     }
 ]
 
