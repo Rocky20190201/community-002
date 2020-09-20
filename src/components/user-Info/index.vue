@@ -1,5 +1,6 @@
 <template>
     <div id="user-Info">
+        <div class="set"><router-link to="/set"><van-icon name="setting-o" /></router-link></div>
         <van-row type="flex" justify="space-between" align="center" class="name-message-avatar">
             <div><img src="../../assets/more.png" class="avatar"></div>
             <div class="name-message">
@@ -69,13 +70,13 @@ export default {
 #user-Info {
     position: relative;
     z-index: 1;
-    margin: 70px 20px 30px;
+    margin: 70px 20px 20px;
     background-color: #ffffff;
     box-shadow: 0px 5px 20px 0px rgba(50, 51, 94, 0.18);
     border-radius: 20px;
 }
 .name-message-avatar {
-    padding: 49px 34px 39px;
+    padding: 60px 34px 39px;
     .name-message {
         padding: 0;
         flex: 1;
@@ -130,5 +131,12 @@ export default {
         line-height: 48px;
         letter-spacing: 3px;
     }
+}
+.set {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    font-size: 44px;
+    color: #666;
 }
 </style>

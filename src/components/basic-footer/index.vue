@@ -32,12 +32,13 @@
                 <span>我的</span>
             </tabbar-item>
         </tabbar>
-        <share-sheet v-model="showActionSheet" :options="options" />
+        <share-sheet v-model="showActionSheet" :options="options" @select="onSelect" />
     </div>
 </template>
 
 <script>
 import { Tabbar, TabbarItem, ShareSheet } from 'vant'
+
 export default {
     name: 'basic-footer',
     components: {
@@ -50,14 +51,30 @@ export default {
             active: 0,
             showActionSheet: false,
             options: [
-                { name: '文章', icon: '' },
-                { name: '影集', icon: '' },
-                { name: '说说', icon: '' }
+                { name: '文章', icon: require('../../assets/wenzhang.png') },
+                { name: '影集', icon: require('../../assets/yingji.png') },
+                { name: '说说', icon: require('../../assets/shuoshuo.png') }
             ]
         }
     },
     methods: {
-        showList () {}
+        showList () {},
+        onSelect (option) {
+            console.log(option)
+            let url = ''
+            switch (option.name) {
+            case '文章':
+                url = '/publish-article'
+                break
+            case '影集':
+                url = '/publish-album'
+                break
+            case '说说':
+                url = '/publish-talk'
+                break
+            }
+            this.$router.push(url)
+        }
     }
 }
 </script>

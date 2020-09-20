@@ -1,6 +1,6 @@
 <template>
     <div id="app-entrance">
-        <router-view/>
+        <router-view />
         <p v-if="caseNumber" class="record">{{ caseNumber }}</p>
         <!-- 底部导航 -->
         <basic-footer v-if="$route.meta.isShowBasicFooter" />
