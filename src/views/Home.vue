@@ -3,13 +3,13 @@
         <search class="search" v-model="keys" shape="round" placeholder="搜索你感兴趣的内容和用户" />
         <tabs class="tab" v-model="active" color="#30b9c3" background="#202528" title-inactive-color="#bfc0c3" title-active-color="#bfc0c3" sticky swipeable animated >
             <tab title="关注">
-                <Article-list />
+                <!-- <Article-list /> -->
             </tab>
             <tab title="推荐">
-                <Article-list />
+                <Article-list :get-list="getRecommend" :type="0" />
             </tab>
             <tab title="说说">
-                <Article-list />
+                <Article-list :get-list="getTalk" :type="2" />
             </tab>
         </tabs>
         <basic-footer />
@@ -19,7 +19,7 @@
 <script>
 import { Search, Tab, Tabs } from 'vant'
 import ArticleList from '../components/article-list'
-
+import AV from 'leancloud-storage'
 export default {
     name: 'home',
     components: {
@@ -37,10 +37,51 @@ export default {
     computed: {
     },
     async created () {
+        // this.getRecommend()
     },
     mounted () {
     },
     methods: {
+        async getRecommend (index = 1, size = 10) {
+            const articleList = new AV.Query('ArticleList')
+            articleList.skip((index - 1) * size)
+            articleList.limit(size)
+            // console.log(index, size)
+            articleList.descending('likeNumber')
+            // articleList.addDescending('readNumber')
+            let list = await articleList.find()
+            // console.log(list)
+            list = list.map(item => {
+                return {
+                    id: item.id,
+                    createdAt: item.createdAt,
+                    updatedAt: item.updatedAt,
+                    ...item.attributes
+                }
+            })
+            // console.log(list)
+            return list
+        },
+        async getTalk (index = 1, size = 10) {
+            const talkList = new AV.Query('TalkList')
+            talkList.skip((index - 1) * size)
+            talkList.limit(size)
+            // console.log(index, size)
+            talkList.descending('likeNumber')
+            // articleList.addDescending('readNumber')
+            let list = await talkList.find()
+            // console.log(list)
+            list = list.map(item => {
+                return {
+                    id: item.id,
+                    createdAt: item.createdAt,
+                    updatedAt: item.updatedAt,
+                    ...item.attributes
+                }
+            })
+            // console.log(list)
+            return list
+        }
     }
 }
 </script>

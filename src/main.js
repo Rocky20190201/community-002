@@ -8,6 +8,10 @@ import { api } from './utils/api'
 import { isPC } from './utils/index'
 import { Row, Col, Icon, NavBar, Lazyload, Image } from 'vant'
 import AV from 'leancloud-storage'
+import VueQuillEditor from 'vue-quill-editor'
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
 
 if (isPC && document.documentElement.clientWidth > 450) {
     document.getElementById('app').style.display = 'none'
@@ -19,13 +23,17 @@ if (isPC && document.documentElement.clientWidth > 450) {
     document.body.appendChild(ifrm)
 } else {
     AV.init({
-        appId: 'EHKPcYGO06gIzS6uoxHtPltQ-MdYXbMMI',
-        appKey: 'N6nsVk6x2axf2MD2thDcoJbn'
+        appId: 'L8Aqrdx47CJ2Xwy1xTSUyKRL-MdYXbMMI',
+        appKey: 'NuT2f2SdqmhIza5kYck9Q5jR'
         // serverURLs: 'https://aliasapi.luckms.com'
     })
 
     Vue.config.productionTip = false
     VueGlobal.init(Vue)
+
+    Vue.use(VueQuillEditor, {
+        placeholder: '请输入内容'
+    })
 
     // 封装的axios添加到原型链上
     Vue.prototype.$api = api

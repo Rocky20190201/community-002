@@ -1,7 +1,7 @@
 <template>
     <div id="my">
         <div class="bg" />
-        <user-info />
+        <user-info :user-id="userId" />
         <tabs class="tab" v-model="active" color="#30b9c3" background="#fff" title-inactive-color="#000" title-active-color="#000" sticky swipeable animated >
             <tab title="动态">
                 <article-list />
@@ -22,6 +22,7 @@ import { Tab, Tabs } from 'vant'
 import UserInfo from '../components/user-Info'
 import ArticleList from '../components/article-list'
 import AlbumList from '../components/album-list'
+import AV from 'leancloud-storage'
 
 export default {
     name: 'my',
@@ -34,7 +35,8 @@ export default {
     },
     data () {
         return {
-            active: 0
+            active: 0,
+            userId: AV.User.current().id
         }
     },
     computed: {

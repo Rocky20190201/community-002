@@ -1,12 +1,12 @@
 <template>
     <div id="publish-album">
         <van-nav-bar fixed left-arrow @click-left="$router.go(-1)" placeholder title="发影集" />
-        <div class=""><field v-model="val" :border="false" maxlength="15" show-word-limit clearable placeholder="请输入影集主题" class="text" /></div>
+        <div class=""><field v-model="title" :border="false" maxlength="15" show-word-limit clearable placeholder="请输入影集主题" class="text" /></div>
         <div class="uploader">
             <uploader
-                v-model="fileList"
+                v-model="imgaeList"
                 preview-size="2.85rem"
-                :after-read="afterRead"
+                :after-read="imgUploader"
                 :max-size="5000 * 1024"
                 max-count="20"
                 @oversize="onOversize"
@@ -18,6 +18,8 @@
 
 <script>
 import { Field, Uploader, Button } from 'vant'
+import AV from 'leancloud-storage'
+
 export default {
     name: 'publish-album',
     components: {
@@ -27,8 +29,8 @@ export default {
     },
     data () {
         return {
-            val: '',
-            fileList: [],
+            title: '',
+            imgaeList: [],
             loading: false
         }
     },
@@ -39,10 +41,43 @@ export default {
     mounted () {
     },
     methods: {
-        afterRead () {},
         publish () {
-            this.loading = true
-            this.$toast('发布成功')
+            if (this.title && this.imgaeList.length !== 0) {
+                this.loading = true
+                const userData = AV.User.current()
+                const AlbumList = AV.Object.extend('AlbumList')
+                const albumList = new AlbumList()
+                const imgaeList = []
+                this.imgaeList.forEach(i => imgaeList.push(i.url))
+                console.log(this.imgaeList, imgaeList, userData.id)
+                albumList.set('title', this.title)
+                albumList.set('imageList', imgaeList)
+                albumList.set('userName', userData.get('username'))
+                albumList.set('userId', userData.id)
+                albumList.set('userImage', userData.get('userImage'))
+                albumList.save().then(() => {
+                    this.$toast({
+                        message: '发布成功',
+                        onClose: () => {
+                            this.$router.push('/my')
+                        }
+                    })
+                })
+            } else this.$toast('请填写标题，上传图片')
+        },
+        imgUploader (data) {
+            let imgAttay = []
+            if (Array.isArray(data)) imgAttay = data
+            else imgAttay.push(data)
+            imgAttay.forEach(i => {
+                i.status = 'uploading'
+                i.message = '上传中...'
+                const file = new AV.File(i.file.name, i.file)
+                file.save().then((file) => {
+                    i.status = 'done'
+                    i.url = file.attributes.url
+                }, (error) => this.$toast(error))
+            })
         },
         onOversize (file) {
             // console.log(file)
@@ -56,7 +91,7 @@ export default {
     .van-uploader__wrapper > div {
         margin: 0 0 20px 0;
         &:nth-child(3n + 2){
-            margin: 0 20px 10px;
+            margin: 0 20px 20px;
         }
     }
 }

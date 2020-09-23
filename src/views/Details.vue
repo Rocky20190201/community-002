@@ -2,70 +2,52 @@
     <div id="details">
         <van-nav-bar fixed left-arrow @click-left="$router.go(-1)" placeholder title="" />
         <div class="content">
-            <h1>为什么你这么爱问为什么？</h1>
+            <h1 v-if="detailsData">{{ detailsData .title }}</h1>
             <van-row type="flex" justify="space-between" align="center" class="avatar-name-time">
-                <div><img src="../assets/more.png" class="avatar"></div>
+                <div><img :src="detailsData.userImage" class="avatar"></div>
                 <div class="">
-                    <p class="name">名称名称</p>
-                    <p class="time"><span class="label">#&nbsp;话题标签</span><span class="time">2020-10-01</span></p>
+                    <p class="name">{{ detailsData.userName }}</p>
+                    <p class="time"><span class="label">#&nbsp;话题标签</span><span class="time">{{ format(detailsData.createdAt,'YYYY-MM-dd HH:mm') }}</span></p>
                 </div>
-                <div class="button-box"><Button size="mini" color="#30b9c3" class="button">关注</Button></div>
+                <div class="button-box"><Button @click="watch" size="mini" :class="['button', { 'active': isWatch }]">{{ isWatch ? '已关注' : '关注' }}</Button></div>
             </van-row>
-            <div class="html"></div>
-            <div class="shuo-shuo">
-                <p class="text">由于杨素破陈有功，加之乐昌公主才色绝代，隋文帝就乱点鸳鸯，将乐昌公主送进杨素家中，赐为杨素小妾。杨素既仰慕乐昌公主的才华，又贪图乐昌公主的美色，因此就更加宠爱，还为乐昌公主专门营造了宅院。然而乐昌公主却终日郁郁寡欢，默无一语。</p>
+            <div v-if="$route.params.type === '0'" class="html" v-html="detailsData.content"></div>
+            <div v-else-if="$route.params.type === '2'" class="shuo-shuo">
+                <p class="text">{{ detailsData.content || detailsData.title }}</p>
                 <grid :border="false" :column-num="3" :square="true" class="img-list">
-                    <grid-item><van-image width="100%" height="100%" fit="cover" lazy-load :src="require('../assets/login-bg.png')" @click="showImg(0)" class="item" /></grid-item>
+                    <grid-item v-for="(item, index) in detailsData.imageList" :key="item"><van-image width="100%" height="100%" fit="cover" lazy-load :src="item" @click="showImg(index, detailsData.imageList)" class="item" /></grid-item>
                 </grid>
             </div>
-            <div class="album">
+            <div v-else class="album">
                 <div class="img"><van-image width="100%" lazy-load :src="require('../assets/login-bg.png')" @click="showImg(0)" alt="" /></div>
             </div>
-
         </div>
         <div class="comment-list">
             <h3>评论</h3>
-            <van-row type="flex" justify="space-between" align="top" class="item">
-                <div><img src="../assets/more.png" class="avatar"></div>
+            <van-row v-for="item in commentList" :key="item.id" type="flex" justify="space-between" align="top" class="item">
+                <div><img :src="item.userImage" class="avatar"></div>
                 <div class="right">
                     <van-row type="flex" justify="space-between" align="top" class="name-time">
-                        <p class="name">Billy Tucker</p>
-                        <p class="time">2020-10-01</p>
+                        <p class="name">{{ item.userName }}</p>
+                        <p class="time">{{ format(item.createdAt,'YYYY-MM-dd HH:mm') }}</p>
                     </van-row>
-                    <p class="text">不知从什么时候开始。我变得连自己都觉到陌生。不得不承认，我们都更喜欢听谎言，即使已经知道真相。</p>
-                </div>
-            </van-row>
-            <van-row type="flex" justify="space-between" align="top" class="item">
-                <div><img src="../assets/more.png" class="avatar"></div>
-                <div class="right">
-                    <van-row type="flex" justify="space-between" align="top" class="name-time">
-                        <p class="name">Billy Tucker</p>
-                        <p class="time">2020-10-01</p>
-                    </van-row>
-                    <p class="text">不知从什么时候开始。我变得连自己都觉到陌生。不得不承认，我们都更喜欢听谎言，即使已经知道真相。</p>
-                </div>
-            </van-row>
-            <van-row type="flex" justify="space-between" align="top" class="item">
-                <div><img src="../assets/more.png" class="avatar"></div>
-                <div class="right">
-                    <van-row type="flex" justify="space-between" align="top" class="name-time">
-                        <p class="name">Billy Tucker</p>
-                        <p class="time">2020-10-01</p>
-                    </van-row>
-                    <p class="text">不知从什么时候开始。我变得连自己都觉到陌生。不得不承认，我们都更喜欢听谎言，即使已经知道真相。</p>
+                    <p class="text">{{ item.content }}</p>
                 </div>
             </van-row>
         </div>
         <van-row type="flex" justify="space-between" align="top" class="comment">
             <div @click="showCommentInput = true" class="input">期待你的美评</div>
-            <div class="like">
-                <p class="like-icon"><van-icon size="0.5rem" color="#6c7b8a" name="good-job-o" /><!-- <van-icon color="#30b9c3" name="good-job" /> --></p>
-                <p class="nub">1223</p>
+            <div class="like" @click="like">
+                <p class="like-icon">
+                    <van-icon v-if="isLike" size="0.5rem" color="#30b9c3" name="good-job" />
+                    <van-icon v-else size="0.5rem" color="#6c7b8a" name="good-job-o" />
+                </p>
+                <p class="nub">{{ detailsData.likeNumber }}</p>
             </div>
         </van-row>
         <popup v-model="showCommentInput" :style="{ height: '100%' }" position="bottom" class="comment-input">
             <van-nav-bar fixed left-arrow @click-left="showCommentInput = false" placeholder title="发布美评" />
-            <div class="textarea"><field v-model="val" type="textarea" rows="10" placeholder="请输入发布的美评" /></div>
+            <div class="textarea"><field v-model="commentTxt" type="textarea" rows="10" placeholder="请输入发布的美评" /></div>
             <div class="button"><Button @click="comment" :loading="loading" round block color="#30b9c3">提交美评</Button></div>
         </popup>
     </div>
@@ -73,6 +55,8 @@
 
 <script>
 import { Button, Grid, GridItem, ImagePreview, Popup, Field } from 'vant'
+import AV from 'leancloud-storage'
+import { format } from '../utils/index'
 
 export default {
     name: 'details-page',
@@ -85,28 +69,166 @@ export default {
     },
     data () {
         return {
-            val: '',
+            commentTxt: '',
             showCommentInput: false,
             loading: false,
             imgList: {
-                images: [require('../assets/login-bg.png'), require('../assets/login-bg.png'), require('../assets/login-bg.png')],
+                images: [],
                 startPosition: 1
-            }
+            },
+            detailsData: {},
+            userData: {},
+            commentList: []
         }
     },
     computed: {
+        isWatch () {
+            let list = []
+            if (this.userData.watchList) list = this.userData.watchList.filter(i => i.id === this.detailsData.userId)
+            return list.length !== 0
+        },
+        isLike () {
+            let list = []
+            if (this.userData.likeList) list = this.userData.likeList.filter(i => i.id === this.detailsData.id)
+            // console.log(this.detailsData.id, this.userData.likeList)
+            return list.length !== 0
+        },
+        _class () {
+            let _class = ''
+            // console.log(this.$route.params)
+            switch (this.$route.params.type) {
+            case '0':
+                _class = 'ArticleList'
+                break
+            case '1':
+                _class = ''
+                break
+            case '2':
+                _class = 'TalkList'
+                break
+            }
+            return _class
+        }
     },
     created () {
-        console.log(this.$route)
+        console.log(this.$route.params.id)
+        this.getDetails()
+        this.getUserData()
+        this.getCommentList()
     },
     mounted () {
     },
     methods: {
-        showImg (index) {
+        format (date, fmt) {
+            return format(date, fmt)
+        },
+        showImg (index, imageList) {
             this.imgList.startPosition = index
+            this.imgList.images = imageList
             ImagePreview(this.imgList)
         },
-        comment () {}
+        async comment () {
+            if (this.commentTxt) {
+                this.loading = true
+                const _class = this._class
+                const CommentList = AV.Object.extend('CommentList')
+                const commentList = new CommentList()
+                const uesr = AV.Object.createWithoutData('_User', AV.User.current().id)
+                // const articleList = AV.Object.createWithoutData(_class, this.detailsData.id)
+                commentList.set('content', this.commentTxt)
+                commentList.set('userData', uesr)
+                commentList.set('id', this.detailsData.id)
+                commentList.set('className', _class)
+                await commentList.save()
+                this.loading = false
+                this.$toast({
+                    message: '发布成功',
+                    onClose: () => {
+                        this.showCommentInput = false
+                    }
+                })
+                this.getCommentList()
+            } else this.$toast('请输入评论内容')
+        },
+        // 获取用户信息
+        async getUserData () {
+            const User = AV.Object.createWithoutData('_User', AV.User.current().id)
+            await User.fetch().then(data => {
+                this.userData = {
+                    likeList: data.get('likeList'),
+                    watchList: data.get('watchList')
+                }
+            })
+        },
+        // 获取内容详情
+        async getDetails () {
+            const _class = this._class
+            const articleList = new AV.Query(_class)
+            articleList.equalTo('objectId', this.$route.params.id)
+            const detailsData = await articleList.first().then(data => data)
+            this.detailsData = {
+                id: detailsData.id,
+                createdAt: detailsData.createdAt,
+                ...detailsData.attributes
+            }
+            // console.log(this.detailsData)
+        },
+        // 获取评论列表
+        async getCommentList () {
+            // const _class = this._class
+            const commentList = new AV.Query('CommentList')
+            commentList.equalTo('id', this.$route.params.id)
+            const listData = await commentList.find().then(data => data)
+            this.commentList = []
+            listData.forEach(i => {
+                // const user = AV.Object.createWithoutData('_User')
+                const userObj = i.get('userData')
+                // console.log(userObj)
+                userObj.fetch({ include: ['dependent'] }).then(data => {
+                    this.commentList.push({
+                        id: i.id,
+                        content: i.get('content'),
+                        createdAt: i.createdAt,
+                        userName: data.get('username'),
+                        userImage: data.get('userImage')
+                    })
+                })
+            })
+            console.log(listData)
+        },
+        // 关注
+        async watch () {
+            const item = this.detailsData
+            if (!AV.User.current()) {
+                this.$router.push('/login')
+                return false
+            }
+            const uesr = AV.Object.createWithoutData('_User', AV.User.current().id)
+            const Uesr = AV.Object.createWithoutData('_User', item.userId)
+            this.isWatch ? uesr.remove('watchList', Uesr) : uesr.add('watchList', Uesr)
+            await uesr.save()
+            this.getUserData()
+        },
+        // 点赞
+        async like () {
+            const item = this.detailsData
+            if (!AV.User.current()) {
+                this.$router.push('/login')
+                return false
+            }
+            // console.log(item)
+            const _class = this._class
+            const like = AV.Object.createWithoutData(_class, item.id)
+            like.set('likeNumber', this.isLike ? item.likeNumber - 1 : item.likeNumber + 1)
+            await like.save()
+            const uesr = AV.Object.createWithoutData('_User', AV.User.current().id)
+            const articleList = AV.Object.createWithoutData(_class, item.id)
+            this.isLike ? uesr.remove('likeList', articleList) : uesr.add('likeList', articleList)
+            await uesr.save()
+            await this.getUserData()
+            !this.isLike ? item.likeNumber-- : item.likeNumber++
+        }
+
     }
 }
 </script>
@@ -172,10 +294,14 @@ export default {
             font-size: 24px;
             color: #fff;
             line-height: 48px;
+            &.active {
+                background-color: #fff;
+                color: #30b9c3;
+            }
         }
     }
     .shuo-shuo .text {
-        font-size: 24px;
+        font-size: 30px;
         color: #000;
         line-height: 1.5;
     }
@@ -216,6 +342,9 @@ export default {
         .time {
             font-size: 24px;
             color: #6c7b8a;
+        }
+        .right {
+            flex: 1;
         }
         .text {
             margin-top: 15px;

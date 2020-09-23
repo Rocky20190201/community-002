@@ -1,6 +1,7 @@
 // 日期格式化工具
 export function format (date, fmt) { // author: meizz
     // console.log(date)
+    if (!date) return false
     var o = {
         'Y+': date.getFullYear(), // 月份
         'M+': date.getMonth() + 1, // 月份

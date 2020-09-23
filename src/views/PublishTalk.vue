@@ -1,12 +1,12 @@
 <template>
     <div id="publish-talk">
         <van-nav-bar fixed left-arrow @click-left="$router.go(-1)" placeholder title="发说说" />
-        <div class=""><field v-model="val" rows="4" type="textarea" :border="false" maxlength="50" show-word-limit clearable placeholder="您想分享什么呢" class="textarea" /></div>
+        <div class=""><field v-model="content" rows="4" type="textarea" :border="false" maxlength="50" show-word-limit clearable placeholder="您想分享什么呢" class="textarea" /></div>
         <div class="uploader">
             <uploader
-                v-model="fileList"
+                v-model="imgaeList"
                 preview-size="2.85rem"
-                :after-read="afterRead"
+                :after-read="imgUploader"
                 :max-size="5000 * 1024"
                 max-count="9"
                 @oversize="onOversize"
@@ -18,6 +18,8 @@
 
 <script>
 import { Field, Uploader, Button } from 'vant'
+import AV from 'leancloud-storage'
+
 export default {
     name: 'publish-talk',
     components: {
@@ -27,8 +29,8 @@ export default {
     },
     data () {
         return {
-            val: '',
-            fileList: [],
+            content: '',
+            imgaeList: [],
             loading: false
         }
     },
@@ -39,10 +41,43 @@ export default {
     mounted () {
     },
     methods: {
-        afterRead () {},
         publish () {
-            this.loading = true
-            this.$toast('发布成功')
+            if (this.title || this.imgaeList.length !== 0) {
+                this.loading = true
+                const userData = AV.User.current()
+                const TalkList = AV.Object.extend('TalkList')
+                const talkList = new TalkList()
+                const imgaeList = []
+                this.imgaeList.forEach(i => imgaeList.push(i.url))
+                console.log(this.imgaeList, imgaeList, userData.id)
+                talkList.set('content', this.content)
+                talkList.set('imageList', imgaeList)
+                talkList.set('userName', userData.get('username'))
+                talkList.set('userId', userData.id)
+                talkList.set('userImage', userData.get('userImage'))
+                talkList.save().then(() => {
+                    this.$toast({
+                        message: '发布成功',
+                        onClose: () => {
+                            this.$router.push('/my')
+                        }
+                    })
+                })
+            } else this.$toast('分享内容或图片至少有一个')
+        },
+        imgUploader (data) {
+            let imgAttay = []
+            if (Array.isArray(data)) imgAttay = data
+            else imgAttay.push(data)
+            imgAttay.forEach(i => {
+                i.status = 'uploading'
+                i.message = '上传中...'
+                const file = new AV.File(i.file.name, i.file)
+                file.save().then((file) => {
+                    i.status = 'done'
+                    i.url = file.attributes.url
+                }, (error) => this.$toast(error))
+            })
         },
         onOversize (file) {
             // console.log(file)
@@ -56,7 +91,7 @@ export default {
     .van-uploader__wrapper > div {
         margin: 0 0 20px 0;
         &:nth-child(3n + 2){
-            margin: 0 20px 10px;
+            margin: 0 20px 20px;
         }
     }
 }

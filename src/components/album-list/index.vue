@@ -94,7 +94,6 @@
                         <div class="read">290</div>
                     </van-row>
                 </div>
-
             </div>
         </list>
     </pull-refresh>
@@ -113,6 +112,10 @@ export default {
         isList: {
             type: Boolean,
             default: true
+        },
+        getList: {
+            type: Function,
+            default: null
         }
     },
     data () {

@@ -1,51 +1,87 @@
 <template>
     <div id="user-Info">
         <div class="set"><router-link to="/set"><van-icon name="setting-o" /></router-link></div>
-        <van-row type="flex" justify="space-between" align="center" class="name-message-avatar">
-            <div><img src="../../assets/more.png" class="avatar"></div>
+        <van-row type="flex" justify="space-between" align="center" class="name-message-avatar" @click="edit">
+            <div><img :src="userData.userImage" class="avatar"></div>
             <div class="name-message">
                 <div>
-                    <field v-model="name" placeholder="请输入用户名" readonly class="name" />
+                    <field v-model="userData.userName" ref="userName" placeholder="点击编辑用户名" readonly class="name" />
                 </div>
                 <div>
-                    <field v-model="message" placeholder="请输入个性签名" readonly class="message" />
+                    <field v-model="userData.remarks" placeholder="点击编辑个性签名" readonly  class="message" />
                 </div>
             </div>
-            <div><img src="../../assets/edit.png" maxlength="10" class="edit" /></div>
+            <div v-if="!isShowAttention" @click="edit"><img src="../../assets/edit.png" maxlength="10" class="edit" /></div>
         </van-row>
         <van-row type="flex" justify="space-between" align="center" class="information">
             <div class="item">
-                <p class="nub">2312</p>
+                <p class="nub">{{ userData.watchlist }}</p>
                 <p class="type">关注</p>
             </div>
             <div class="item">
-                <p class="nub">2312</p>
+                <p class="nub">0</p>
                 <p class="type">粉丝</p>
             </div>
             <div class="item">
-                <p class="nub">2312</p>
-                <p class="type">阅读</p>
+                <p class="nub">{{ userData.readNumber }}</p>
+                <p class="type">被阅读</p>
             </div>
         </van-row>
-        <div class="attention"><p class="button">关注</p></div>
+        <div v-if="isShowAttention" class="attention"><p class="button">关注</p></div>
     </div>
 </template>
 
 <script>
 import { Field } from 'vant'
+import AV from 'leancloud-storage'
+
 export default {
     name: 'user-Info',
     components: {
         Field
     },
-    data () {
-        return {
-            name: 'djjeow',
-            message: '不知从什么时候开始。我变得连自己都觉到陌生。'
+    props: {
+        userId: {
+            type: String,
+            default: ''
         }
     },
+    data () {
+        return {
+            userData: {
+                userName: '',
+                remarks: '',
+                readNumber: 0,
+                watchlist: 0
+            }
+        }
+    },
+    computed: {
+        isShowAttention () {
+            return this.userId !== AV.User.current().id
+        }
+    },
+    async created () {
+        await this.getUserData()
+    },
     methods: {
-        showList () {}
+        showList () {},
+        async getUserData () {
+            const User = AV.Object.createWithoutData('_User', this.userId)
+            await User.fetch().then(data => {
+                this.userData = {
+                    userName: data.get('userName'),
+                    remarks: data.get('remarks'),
+                    userImage: data.get('userImage'),
+                    readNumber: data.get('readNumber') || 0,
+                    watchlist: data.get('watchlist').length
+                }
+                console.log(this.userData)
+            })
+        },
+        edit () {
+            this.$router.push('/edit-user')
+        }
     }
 }
 </script>

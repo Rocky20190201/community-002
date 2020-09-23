@@ -4,7 +4,7 @@ import AV from 'leancloud-storage'
 // import { Toast } from 'vant'
 
 const authFilter = (to, from, next) => {
-    if (!AV.User.current()) {
+    if (AV.User.current()) {
         next()
     } else {
         next({
@@ -41,6 +41,12 @@ const routes = [
         beforeEnter: authFilter
     },
     {
+        path: '/edit-user',
+        name: 'EditUser',
+        component: () => import('../views/EditUser.vue'),
+        beforeEnter: authFilter
+    },
+    {
         path: '/set',
         name: 'Set',
         component: () => import('../views/Set.vue'),
@@ -70,7 +76,7 @@ const routes = [
         component: () => import('../views/Feedback.vue')
     },
     {
-        path: '/details',
+        path: '/details/:type/:id',
         name: 'DetailsPage',
         component: () => import('../views/Details.vue')
     },

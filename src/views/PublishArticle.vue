@@ -1,35 +1,31 @@
 <template>
     <div id="publish-article">
         <van-nav-bar fixed left-arrow @click-left="$router.go(-1)" placeholder title="发文章" />
-        <div class=""><field v-model="val" rows="4" type="textarea" :border="false" maxlength="50" show-word-limit clearable placeholder="您想分享什么呢" class="textarea" /></div>
-        <div class="uploader">
-            <uploader
-                v-model="fileList"
-                preview-size="2.85rem"
-                :after-read="afterRead"
-                :max-size="5000 * 1024"
-                max-count="9"
-                @oversize="onOversize"
-                multiple />
-        </div>
+        <div class=""><field v-model="title" :border="false" maxlength="15" show-word-limit clearable placeholder="请输入文章标题" class="text" /></div>
+        <quill-editor
+            v-model="content"
+            ref="myQuillEditor">
+        </quill-editor>
         <div class="button"><Button @click="publish" :loading="loading" round block color="#30b9c3">发布</Button></div>
     </div>
 </template>
 
 <script>
-import { Field, Uploader, Button } from 'vant'
+import { Field, Button } from 'vant'
+import AV from 'leancloud-storage'
+
 export default {
     name: 'publish-article',
     components: {
         Field,
-        Uploader,
         Button
     },
     data () {
         return {
-            val: '',
+            title: '',
             fileList: [],
-            loading: false
+            loading: false,
+            content: ''
         }
     },
     computed: {
@@ -41,11 +37,28 @@ export default {
     methods: {
         afterRead () {},
         publish () {
-            this.loading = true
-            this.$toast('发布成功')
+            if (this.title && this.content) {
+                this.loading = true
+                const userData = AV.User.current()
+                const ArticleList = AV.Object.extend('ArticleList')
+                const articleList = new ArticleList()
+                // console.log(this.title, this.content, userData.id)
+                articleList.set('title', this.title)
+                articleList.set('content', this.content)
+                articleList.set('userName', userData.get('username'))
+                articleList.set('userId', userData.id)
+                articleList.set('userImage', userData.get('userImage'))
+                articleList.save().then(() => {
+                    this.$toast({
+                        message: '发布成功',
+                        onClose: () => {
+                            this.$router.push('/my')
+                        }
+                    })
+                })
+            } else this.$toast('请填写内容或标题')
         },
         onOversize (file) {
-            // console.log(file)
             this.$toast('文件大小不能超过 5M')
         }
     }
@@ -59,6 +72,15 @@ export default {
             margin: 0 20px 10px;
         }
     }
+
+}
+.ql-toolbar.ql-snow,
+.ql-container.ql-snow {
+    border-color: #eee;
+}
+.ql-editor {
+    min-height: 300px;
+    border-color: #eee;
 }
 </style>
 <style lang="scss" scoped>
