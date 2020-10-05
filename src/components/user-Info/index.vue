@@ -1,8 +1,8 @@
 <template>
     <div id="user-Info">
-        <div class="set"><router-link to="/set"><van-icon name="setting-o" /></router-link></div>
+        <div v-if="!isShowAttention" class="set"><router-link to="/set"><van-icon name="setting-o" /></router-link></div>
         <van-row type="flex" justify="space-between" align="center" class="name-message-avatar" @click="edit">
-            <div><img :src="userData.userImage" class="avatar"></div>
+            <div><van-image fit="cover" round  :src="userData.userImage" class="avatar" /></div>
             <div class="name-message">
                 <div>
                     <field v-model="userData.userName" ref="userName" placeholder="点击编辑用户名" readonly class="name" />
@@ -15,7 +15,7 @@
         </van-row>
         <van-row type="flex" justify="space-between" align="center" class="information">
             <div class="item">
-                <p class="nub">{{ userData.watchlist }}</p>
+                <p class="nub">{{ userData.watchList }}</p>
                 <p class="type">关注</p>
             </div>
             <div class="item">
@@ -27,7 +27,10 @@
                 <p class="type">被阅读</p>
             </div>
         </van-row>
-        <div v-if="isShowAttention" class="attention"><p class="button">关注</p></div>
+        <div v-if="isShowAttention" class="attention" >
+            <p v-if="!isWatch" @click="watch(userData)" class="button">关注</p>
+            <p v-else @click="watch(userData)" class="button active">已关注</p>
+        </div>
     </div>
 </template>
 
@@ -52,17 +55,20 @@ export default {
                 userName: '',
                 remarks: '',
                 readNumber: 0,
-                watchlist: 0
-            }
+                watchList: 0
+            },
+            isWatch: false
         }
     },
     computed: {
         isShowAttention () {
-            return this.userId !== AV.User.current().id
+            if (!AV.User.current()) return true
+            else return this.userId !== AV.User.current().id
         }
     },
     async created () {
         await this.getUserData()
+        if (AV.User.current()) this.getIsWatch()
     },
     methods: {
         showList () {},
@@ -70,17 +76,41 @@ export default {
             const User = AV.Object.createWithoutData('_User', this.userId)
             await User.fetch().then(data => {
                 this.userData = {
-                    userName: data.get('userName'),
+                    userId: data.id,
+                    userName: data.get('username') || data.get('mobilePhoneNumber'),
                     remarks: data.get('remarks'),
                     userImage: data.get('userImage'),
                     readNumber: data.get('readNumber') || 0,
-                    watchlist: data.get('watchlist').length
+                    watchList: data.get('watchList').length
                 }
                 console.log(this.userData)
             })
         },
         edit () {
             this.$router.push('/edit-user')
+        },
+        async getIsWatch () {
+            let list = []
+            const User = AV.Object.createWithoutData('_User', AV.User.current().id)
+            await User.fetch().then(data => {
+                const userWatchList = data.get('watchList')
+                list = userWatchList.filter(i => i.id === this.userId)
+            })
+            this.isWatch = list.length > 0
+        },
+        // 关注
+        async watch (item) {
+            // console.log(item.userId)
+            if (!AV.User.current()) {
+                this.$router.push('/login')
+                return false
+            }
+            const uesr = AV.Object.createWithoutData('_User', AV.User.current().id)
+            const Uesr = AV.Object.createWithoutData('_User', item.userId)
+            this.isWatch ? uesr.remove('watchList', Uesr) : uesr.add('watchList', Uesr)
+            uesr.save()
+            this.getUserData()
+            this.isWatch = !this.isWatch
         }
     }
 }
@@ -159,6 +189,7 @@ export default {
         width: 50%;
         height: 48px;
         margin: auto;
+        border: solid 1px #30b9c3;
         background-color: #30b9c3;
         border-radius: 24px;
         font-size: 24px;
@@ -166,6 +197,10 @@ export default {
         text-align: center;
         line-height: 48px;
         letter-spacing: 3px;
+        &.active {
+            background: #fff;
+            color: #30b9c3;
+        }
     }
 }
 .set {

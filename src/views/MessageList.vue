@@ -6,9 +6,7 @@
             <router-link to=""><img src="../assets/message-bg-3.png" alt=""></router-link>
         </van-row>
         <collapse v-model="activeNames" class="list" >
-            <collapse-item title="系统消息" name="1" :is-link="false" class="item red">内容</collapse-item>
-            <collapse-item title="系统消息" name="2" :is-link="false" class="item red">内容</collapse-item>
-            <collapse-item title="系统消息" name="3" :is-link="false" class="item red">内容</collapse-item>
+            <collapse-item title="系统消息" name="1" :is-link="false" class="item red">欢迎加入币心～</collapse-item>
         </collapse>
         <basic-footer />
     </div>

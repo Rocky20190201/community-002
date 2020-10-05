@@ -55,6 +55,8 @@ export default {
                 talkList.set('userName', userData.get('username'))
                 talkList.set('userId', userData.id)
                 talkList.set('userImage', userData.get('userImage'))
+                talkList.set('likeNumber', 0)
+                talkList.set('readNumber', 0)
                 talkList.save().then(() => {
                     this.$toast({
                         message: '发布成功',

@@ -55,6 +55,8 @@ export default {
                 albumList.set('userName', userData.get('username'))
                 albumList.set('userId', userData.id)
                 albumList.set('userImage', userData.get('userImage'))
+                albumList.set('likeNumber', 0)
+                albumList.set('readNumber', 0)
                 albumList.save().then(() => {
                     this.$toast({
                         message: '发布成功',

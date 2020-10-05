@@ -1,17 +1,18 @@
 <template>
     <div id="my">
+        <van-nav-bar fixed left-arrow @click-left="$router.go(-1)" placeholder title="用户信息" />
         <div class="bg" />
         <user-info :user-id="userId" />
         <tabs class="tab" v-model="active" color="#30b9c3" background="#fff" title-inactive-color="#000" title-active-color="#000" sticky swipeable animated >
             <tab title="作品">
                 <!-- <album-list /> -->
-                <article-list :get-list="getRecommend" :type="0" />
+                <article-list :get-list="getRecommend" :is-show-watch="false" :type="0" />
             </tab>
             <tab title="影集">
                 <album-list :get-list="getAlbumList" />
             </tab>
             <tab title="说说">
-                <article-list :get-list="getTalk" :type="2" />
+                <article-list :get-list="getTalk" :is-show-watch="false" :type="2" />
             </tab>
         </tabs>
         <basic-footer />
@@ -37,7 +38,7 @@ export default {
     data () {
         return {
             active: 0,
-            userId: AV.User.current().id
+            userId: this.$route.params.id
         }
     },
     computed: {

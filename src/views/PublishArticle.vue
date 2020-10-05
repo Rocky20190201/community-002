@@ -48,6 +48,8 @@ export default {
                 articleList.set('userName', userData.get('username'))
                 articleList.set('userId', userData.id)
                 articleList.set('userImage', userData.get('userImage'))
+                articleList.set('likeNumber', 0)
+                articleList.set('readNumber', 0)
                 articleList.save().then(() => {
                     this.$toast({
                         message: '发布成功',

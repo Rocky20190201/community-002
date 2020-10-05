@@ -11,7 +11,7 @@
                 <template #icon="props">
                     <img class="icon-img" :src="props.active ? require('../../assets/icon-home-tab-2-active.png') : require('../../assets/icon-home-tab-2.png')" />
                 </template>
-                <span>圈子</span>
+                <span>影集</span>
             </tabbar-item>
             <tabbar-item @click="showActionSheet = true">
                 <template>

@@ -1,39 +1,15 @@
 <template>
     <div id="topic">
-        <search class="search" v-model="keys" shape="round" placeholder="圈子" />
+        <search class="search" v-model="keys" shape="round" placeholder="请输入想要搜索的影集" @search="$router.push(`/album-list?keys=${keys}`)" />
         <van-row type="flex" justify="space-between" align="center" class="list">
-            <div class="item">
-                <router-link to="">
-                    <div><img src="../assets/more.png" alt=""></div>
-                    <p>更多圈子</p>
-                </router-link>
-            </div>
-            <div class="item">
-                <router-link to="">
-                    <div><img src="../assets/more.png" alt=""></div>
-                    <p>更多圈子</p>
-                </router-link>
-            </div>
-            <div class="item">
-                <router-link to="">
-                    <div><img src="../assets/more.png" alt=""></div>
-                    <p>更多圈子</p>
-                </router-link>
-            </div>
-            <div class="item">
-                <router-link to="">
-                    <div><img src="../assets/more.png" alt=""></div>
-                    <p>更多圈子</p>
-                </router-link>
-            </div>
-            <div class="item">
-                <router-link to="">
-                    <div><img src="../assets/more.png" alt=""></div>
-                    <p>更多圈子</p>
+            <div v-for="item in userList" :key="item.id" class="item">
+                <router-link :to="`/user-page/${item.id }`">
+                    <div><van-image fit="cover" round :src="item.userImage" class="img" /></div>
+                    <p>{{ item.username }}</p>
                 </router-link>
             </div>
         </van-row>
-        <album-list />
+        <album-list :get-list="getAlbumList" />
         <basic-footer />
     </div>
 </template>
@@ -41,6 +17,7 @@
 <script>
 import { Search } from 'vant'
 import AlbumList from '../components/album-list'
+import AV from 'leancloud-storage'
 
 export default {
     name: 'topic',
@@ -50,6 +27,7 @@ export default {
     },
     data () {
         return {
+            userList: [],
             keys: '',
             active: 0
         }
@@ -57,10 +35,51 @@ export default {
     computed: {
     },
     async created () {
+        this.userList = await this.getUserList()
     },
     mounted () {
     },
     methods: {
+        async getAlbumList (index = 1, size = 10) {
+            const albumList = new AV.Query('AlbumList')
+            albumList.skip((index - 1) * size)
+            albumList.limit(size)
+            // console.log(index, size)
+            // albumList.descending('likeNumber')
+            // articleList.addDescending('readNumber')
+            let list = await albumList.find()
+            // console.log(list)
+            list = list.map(item => {
+                return {
+                    id: item.id,
+                    createdAt: item.createdAt,
+                    updatedAt: item.updatedAt,
+                    ...item.attributes
+                }
+            })
+            // console.log(list)
+            return list
+        },
+        async getUserList () {
+            const user = new AV.Query('_User')
+            // user.skip((index - 1) * size)
+            user.limit(5)
+            // console.log(index, size)
+            user.descending('likeNumber')
+            // articleList.addDescending('readNumber')
+            let list = await user.find()
+            // console.log(list)
+            list = list.map(item => {
+                return {
+                    id: item.id,
+                    createdAt: item.createdAt,
+                    updatedAt: item.updatedAt,
+                    ...item.attributes
+                }
+            })
+            // console.log(list)
+            return list
+        }
     }
 }
 </script>
@@ -87,13 +106,15 @@ export default {
     padding: 30px 40px;
     background: #202528;
     line-height: 1;
-    img {
+    .img {
         width: 90px;
         height: 90px;
         vertical-align: top;
         margin-bottom: 8px;
+        border-radius: 50%;
     }
     p {
+        margin-top: 10px;
         font-size: 22px;
         color: #fff;
         text-align: center;

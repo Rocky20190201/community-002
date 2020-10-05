@@ -1,9 +1,9 @@
 <template>
     <div id="home">
-        <search class="search" v-model="keys" shape="round" placeholder="搜索你感兴趣的内容和用户" />
+        <search class="search" v-model="keys" shape="round" placeholder="搜索你感兴趣的内容和用户" @search="$router.push(`/article-list?keys=${keys}`)" />
         <tabs class="tab" v-model="active" color="#30b9c3" background="#202528" title-inactive-color="#bfc0c3" title-active-color="#bfc0c3" sticky swipeable animated >
             <tab title="关注">
-                <!-- <Article-list /> -->
+                <Article-list :get-list="getAttention" :type="0"/>
             </tab>
             <tab title="推荐">
                 <Article-list :get-list="getRecommend" :type="0" />
@@ -31,17 +31,32 @@ export default {
     data () {
         return {
             keys: '',
-            active: 0
+            active: 1,
+            userWatchList: []
         }
     },
     computed: {
     },
     async created () {
-        // this.getRecommend()
+        if (AV.User.current()) await this.getUserData()
+        // this.getAttention()
     },
     mounted () {
     },
     methods: {
+        // 获取用户信息
+        async getUserData () {
+            const User = AV.Object.createWithoutData('_User', AV.User.current().id)
+            await User.fetch().then(data => {
+                // this.userLikeList = data.get('likeList')
+                console.log(data.get('watchList'))
+                const watchList = data.get('watchList')
+                watchList.map(i => {
+                    this.userWatchList.push(i.id)
+                })
+                console.log(this.userWatchList)
+            })
+        },
         async getRecommend (index = 1, size = 10) {
             const articleList = new AV.Query('ArticleList')
             articleList.skip((index - 1) * size)
@@ -70,6 +85,23 @@ export default {
             talkList.descending('likeNumber')
             // articleList.addDescending('readNumber')
             let list = await talkList.find()
+            list = list.map(item => {
+                return {
+                    id: item.id,
+                    createdAt: item.createdAt,
+                    updatedAt: item.updatedAt,
+                    ...item.attributes
+                }
+            })
+            // console.log(list)
+            return list
+        },
+        async getAttention (index = 1, size = 10) {
+            const articleList = new AV.Query('ArticleList')
+            articleList.skip((index - 1) * size)
+            articleList.limit(size)
+            articleList.containedIn('userId', this.userWatchList)
+            let list = await articleList.find()
             // console.log(list)
             list = list.map(item => {
                 return {

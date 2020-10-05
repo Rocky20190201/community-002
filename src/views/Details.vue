@@ -3,11 +3,11 @@
         <van-nav-bar fixed left-arrow @click-left="$router.go(-1)" placeholder title="" />
         <div class="content">
             <h1 v-if="detailsData">{{ detailsData .title }}</h1>
-            <van-row type="flex" justify="space-between" align="center" class="avatar-name-time">
-                <div><img :src="detailsData.userImage" class="avatar"></div>
+            <van-row @click.stop="$router.push(`/user-page/${detailsData.userId }`)" type="flex" justify="space-between" align="center" class="avatar-name-time">
+                <div><van-image fit="cover" round  :src="detailsData.userImage" class="avatar" /></div>
                 <div class="">
                     <p class="name">{{ detailsData.userName }}</p>
-                    <p class="time"><span class="label">#&nbsp;话题标签</span><span class="time">{{ format(detailsData.createdAt,'YYYY-MM-dd HH:mm') }}</span></p>
+                    <p class="time"><span class="label">#&nbsp;热门</span><span class="time">{{ format(detailsData.createdAt,'YYYY-MM-dd HH:mm') }}</span></p>
                 </div>
                 <div class="button-box"><Button @click="watch" size="mini" :class="['button', { 'active': isWatch }]">{{ isWatch ? '已关注' : '关注' }}</Button></div>
             </van-row>
@@ -19,21 +19,24 @@
                 </grid>
             </div>
             <div v-else class="album">
-                <div class="img"><van-image width="100%" lazy-load :src="require('../assets/login-bg.png')" @click="showImg(0)" alt="" /></div>
+                <div v-for="(item, index) in detailsData.imageList" :key="item" class="img"><van-image v-if="item" width="100%" lazy-load :src="item" @click="showImg(index, detailsData.imageList)" alt="" /></div>
             </div>
         </div>
         <div class="comment-list">
             <h3>评论</h3>
-            <van-row v-for="item in commentList" :key="item.id" type="flex" justify="space-between" align="top" class="item">
-                <div><img :src="item.userImage" class="avatar"></div>
-                <div class="right">
-                    <van-row type="flex" justify="space-between" align="top" class="name-time">
-                        <p class="name">{{ item.userName }}</p>
-                        <p class="time">{{ format(item.createdAt,'YYYY-MM-dd HH:mm') }}</p>
-                    </van-row>
-                    <p class="text">{{ item.content }}</p>
-                </div>
-            </van-row>
+            <template v-if="commentList.length !== 0">
+                <van-row v-for="item in commentList" :key="item.id" type="flex" justify="space-between" align="top" class="item">
+                    <div><img :src="item.userImage" class="avatar"></div>
+                    <div class="right">
+                        <van-row type="flex" justify="space-between" align="top" class="name-time">
+                            <p class="name">{{ item.userName }}</p>
+                            <p class="time">{{ format(item.createdAt,'YYYY-MM-dd HH:mm') }}</p>
+                        </van-row>
+                        <p class="text">{{ item.content }}</p>
+                    </div>
+                </van-row>
+            </template>
+            <Empty v-else description="暂无评论" />
         </div>
         <van-row type="flex" justify="space-between" align="top" class="comment">
             <div @click="showCommentInput = true" class="input">期待你的美评</div>
@@ -54,7 +57,7 @@
 </template>
 
 <script>
-import { Button, Grid, GridItem, ImagePreview, Popup, Field } from 'vant'
+import { Button, Grid, GridItem, ImagePreview, Popup, Field, Empty } from 'vant'
 import AV from 'leancloud-storage'
 import { format } from '../utils/index'
 
@@ -65,7 +68,8 @@ export default {
         Grid,
         GridItem,
         Popup,
-        Field
+        Field,
+        Empty
     },
     data () {
         return {
@@ -101,7 +105,7 @@ export default {
                 _class = 'ArticleList'
                 break
             case '1':
-                _class = ''
+                _class = 'AlbumList'
                 break
             case '2':
                 _class = 'TalkList'
@@ -111,9 +115,9 @@ export default {
         }
     },
     created () {
-        console.log(this.$route.params.id)
+        // console.log(this.$route.params.id)
         this.getDetails()
-        this.getUserData()
+        if (AV.User.current()) this.getUserData()
         this.getCommentList()
     },
     mounted () {
@@ -128,6 +132,10 @@ export default {
             ImagePreview(this.imgList)
         },
         async comment () {
+            if (!AV.User.current()) {
+                this.$router.push('/login')
+                return false
+            }
             if (this.commentTxt) {
                 this.loading = true
                 const _class = this._class
@@ -316,6 +324,10 @@ export default {
         margin: 0 -30px;
         .img {
             width: 100%;
+            // min-height: 100px;
+            font-size: 0;
+            .van-image {
+            }
         }
     }
     .comment-list {

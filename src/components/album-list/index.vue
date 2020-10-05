@@ -1,112 +1,66 @@
 <template>
-    <pull-refresh v-model="pullRefreshLoading" @refresh="onRefresh" id="album-list">
+    <pull-refresh v-model="isRefreshLoading" @refresh="onRefresh" id="album-list">
         <list
-            v-model="listLoading"
+            v-if="listDataL.length !== 0 || !finished"
+            v-model="isLoading"
             :finished="finished"
             finished-text="没有更多了"
             @load="onLoad"
         >
             <div class="left">
-                <div class="item">
-                    <div class="img-1"><van-image width="100%" lazy-load src="https://img.yzcdn.cn/vant/cat.jpeg" /></div>
-                    <van-row type="flex" justify="space-between" align="center" class="name-time">
-                        <div><img src="" class="avatar"></div>
-                        <p class="name">新疆大街</p>
-                        <p class="time">12:00</p>
+                <div v-for="item in listDataL" :key="item.id" @click="$router.push(`/details/1/${item.id}`)" class="item">
+                    <div class="img-1"><van-image width="100%" fit="cover" lazy-load :src="item.imageList[0]" /></div>
+                    <van-row @click.stop="$router.push(`/user-page/${item.userId }`)" type="flex" justify="space-between" align="center" class="name-time">
+                        <div><van-image fit="cover" round :src="item.userImage" class="avatar" /></div>
+                        <p class="name">{{ item.userName }}</p>
+                        <p class="time">{{ format(item.updatedAt,'HH:mm') }}</p>
                     </van-row>
-                    <p class="text van-multi-ellipsis--l3">不知从什么时候开始。我变得连自己都觉到陌生。不得不承认，我们都更喜欢听谎言，即使已经知道真相。</p>
+                    <p class="text van-multi-ellipsis--l3">{{ item.title }}</p>
                     <van-row type="flex" justify="space-between" align="center" class="information">
-                        <div class="like">
-                            <van-icon color="#6c7b8a" name="good-job-o" />
-                            <!-- <van-icon color="#30b9c3" name="good-job" /> -->
-                            &nbsp;1333</div>
-                        <div class="comment"><van-icon color="#6c7b8a" name="chat-o" />&nbsp;390</div>
-                        <div class="read">290</div>
-                    </van-row>
-                </div>
-                <div class="item">
-                    <div class="img-1"><van-image width="100%" lazy-load src="https://img.yzcdn.cn/vant/cat.jpeg" /></div>
-                    <van-row type="flex" justify="space-between" align="center" class="name-time">
-                        <div><img src="" class="avatar"></div>
-                        <p class="name">新疆大街</p>
-                        <p class="time">12:00</p>
-                    </van-row>
-                    <p class="text van-multi-ellipsis--l3">不知从什么时候开始。我变得连自己都觉到陌生。不得不承认，我们都更喜欢听谎言，即使已经知道真相。</p>
-                    <van-row type="flex" justify="space-between" align="center" class="information">
-                        <div class="like">
-                            <van-icon color="#6c7b8a" name="good-job-o" />
-                            <!-- <van-icon color="#30b9c3" name="good-job" /> -->
-                            &nbsp;1333</div>
-                        <div class="comment"><van-icon color="#6c7b8a" name="chat-o" />&nbsp;390</div>
-                        <div class="read">290</div>
-                    </van-row>
-                </div>
-                <div class="item">
-                    <div class="img-1"><van-image width="100%" lazy-load src="https://img.yzcdn.cn/vant/cat.jpeg" /></div>
-                    <van-row type="flex" justify="space-between" align="center" class="name-time">
-                        <div><img src="" class="avatar"></div>
-                        <p class="name">新疆大街</p>
-                        <p class="time">12:00</p>
-                    </van-row>
-                    <p class="text van-multi-ellipsis--l3">不知从什么时候开始。我变得连自己都觉到陌生。不得不承认，我们都更喜欢听谎言，即使已经知道真相。</p>
-                    <van-row type="flex" justify="space-between" align="center" class="information">
-                        <div class="like">
-                            <van-icon color="#6c7b8a" name="good-job-o" />
-                            <!-- <van-icon color="#30b9c3" name="good-job" /> -->
-                            &nbsp;1333</div>
-                        <div class="comment"><van-icon color="#6c7b8a" name="chat-o" />&nbsp;390</div>
-                        <div class="read">290</div>
+                        <div class="like" @click.stop="like(item)">
+                            <van-icon v-if="!item.isLike" color="#6c7b8a" name="good-job-o" />
+                            <van-icon v-else color="#30b9c3" name="good-job" />
+                            &nbsp;{{ item.likeNumber }}</div>
+                        <div class="comment"><van-icon color="#6c7b8a" name="chat-o" />&nbsp;0</div>
+                        <div class="read">{{ item.readNumber }}阅读</div>
                     </van-row>
                 </div>
             </div>
             <div class="right">
-                <div class="item">
-                    <div class="img-1"><van-image width="100%" lazy-load src="https://img.yzcdn.cn/vant/cat.jpeg" /></div>
-                    <van-row type="flex" justify="space-between" align="center" class="name-time">
-                        <div><img src="" class="avatar"></div>
-                        <p class="name">新疆大街</p>
-                        <p class="time">12:00</p>
+                <div v-for="item in listDataR" :key="item.id" @click="$router.push(`/details/1/${item.id}`)" class="item">
+                    <div class="img-1"><van-image width="100%" fit="cover" lazy-load :src="item.imageList[0]" /></div>
+                    <van-row @click.stop="$router.push(`/user-page/${item.userId }`)" type="flex" justify="space-between" align="center" class="name-time">
+                        <div><img :src="item.userImage" class="avatar"></div>
+                        <p class="name">{{ item.userName }}</p>
+                        <p class="time">{{ format(item.updatedAt,'HH:mm') }}</p>
                     </van-row>
-                    <p class="text van-multi-ellipsis--l3">不知从什么时候开始。我变得连自己都觉到陌生。不得不承认，我们都更喜欢听谎言，即使已经知道真相。</p>
+                    <p class="text van-multi-ellipsis--l3">{{ item.title }}</p>
                     <van-row type="flex" justify="space-between" align="center" class="information">
-                        <div class="like">
-                            <van-icon color="#6c7b8a" name="good-job-o" />
-                            <!-- <van-icon color="#30b9c3" name="good-job" /> -->
-                            &nbsp;1333</div>
-                        <div class="comment"><van-icon color="#6c7b8a" name="chat-o" />&nbsp;390</div>
-                        <div class="read">290</div>
-                    </van-row>
-                </div>
-                <div class="item">
-                    <div class="img-1"><van-image width="100%" lazy-load src="https://img.yzcdn.cn/vant/cat.jpeg" /></div>
-                    <van-row type="flex" justify="space-between" align="center" class="name-time">
-                        <div><img src="" class="avatar"></div>
-                        <p class="name">新疆大街</p>
-                        <p class="time">12:00</p>
-                    </van-row>
-                    <p class="text van-multi-ellipsis--l3">不知从什么时候开始。我变得连自己都觉到陌生。不得不承认，我们都更喜欢听谎言，即使已经知道真相。</p>
-                    <van-row type="flex" justify="space-between" align="center" class="information">
-                        <div class="like">
-                            <van-icon color="#6c7b8a" name="good-job-o" />
-                            <!-- <van-icon color="#30b9c3" name="good-job" /> -->
-                            &nbsp;1333</div>
-                        <div class="comment"><van-icon color="#6c7b8a" name="chat-o" />&nbsp;390</div>
-                        <div class="read">290</div>
+                        <div class="like" @click.stop="like(item)">
+                            <van-icon v-if="!item.isLike" color="#6c7b8a" name="good-job-o" />
+                            <van-icon v-else color="#30b9c3" name="good-job" />
+                            &nbsp;{{ item.likeNumber }}</div>
+                        <div class="comment"><van-icon color="#6c7b8a" name="chat-o" />&nbsp;0</div>
+                        <div class="read">{{ item.readNumber }}阅读</div>
                     </van-row>
                 </div>
             </div>
         </list>
+        <Empty v-else description="暂未发布相关内容" />
     </pull-refresh>
 </template>
 
 <script>
-import { List, PullRefresh } from 'vant'
+import { List, PullRefresh, Empty } from 'vant'
+import { format } from '../../utils/index'
+import AV from 'leancloud-storage'
 
 export default {
     name: 'album-list',
     components: {
         List,
-        PullRefresh
+        PullRefresh,
+        Empty
     },
     props: {
         isList: {
@@ -120,17 +74,93 @@ export default {
     },
     data () {
         return {
-            pullRefreshLoading: false,
-            listLoading: false,
-            finished: false
+            isLoading: false,
+            isRefreshLoading: false,
+            finished: false,
+            listDataL: [],
+            listDataR: [],
+            pageIndex: 0,
+            pageSize: 20,
+            userLikeList: [],
+            userWatchList: []
+        }
+    },
+    created () {
+        if (AV.User.current()) {
+            this.getUserData()
+            // this.getUserWatchList()
         }
     },
     methods: {
-        onRefresh () {
-            this.isLoading = false
+        format (date, fmt) {
+            return format(date, fmt)
         },
-        onLoad () {
-
+        async onLoad () {
+            // console.log(this.getList)
+            this.pageIndex++
+            const listData = await this.getList(this.pageIndex, this.pageSize)
+            if (listData.length === 0) this.finished = true
+            else {
+                listData.forEach((i, index) => {
+                    i.isLike = this.isLike(i.id)
+                    if (index % 2 === 0) this.listDataL.push(i)
+                    else if (index % 2 !== 0) this.listDataR.push(i)
+                })
+                // this.listData.push.apply(this.listData, listData)
+            }
+            this.isLoading = false
+            // console.log(this.listData[0])
+        },
+        async onRefresh () {
+            this.pageIndex = 1
+            this.finished = false
+            const listData = await this.getList(this.pageIndex, this.pageSize)
+            listData.map(i => {
+                i.isLike = this.isLike(i.id)
+            })
+            this.listDataL = []
+            this.listDataR = []
+            listData.forEach((i, index) => {
+                i.isLike = this.isLike(i.id)
+                if (index % 2 === 0) this.listDataL.push(i)
+                else if (index % 2 !== 0) this.listDataR.push(i)
+            })
+            // this.listData = listData
+            // this.$forceUpdate()
+            if (listData.length === 0) this.finished = true
+            console.log(this.listData, listData)
+            this.isRefreshLoading = false
+        },
+        // 获取用户信息
+        async getUserData () {
+            const User = AV.Object.createWithoutData('_User', AV.User.current().id)
+            await User.fetch().then(data => {
+                this.userLikeList = data.get('likeList')
+                this.userWatchList = data.get('watchList')
+            })
+        },
+        // 是否已点赞
+        isLike (id) {
+            const list = this.userLikeList.filter(i => i.id === id)
+            return list.length !== 0
+        },
+        // 点赞
+        async like (item) {
+            if (!AV.User.current()) {
+                this.$router.push('/login')
+                return false
+            }
+            // console.log(item)
+            const like = AV.Object.createWithoutData('AlbumList', item.id)
+            item.isLike ? item.likeNumber-- : item.likeNumber++
+            like.set('likeNumber', item.likeNumber)
+            await like.save()
+            const uesr = AV.Object.createWithoutData('_User', AV.User.current().id)
+            const articleList = AV.Object.createWithoutData('AlbumList', item.id)
+            item.isLike ? uesr.remove('likeList', articleList) : uesr.add('likeList', articleList)
+            uesr.save()
+            this.getUserData()
+            item.isLike = !item.isLike
         }
     }
 }
@@ -165,7 +195,7 @@ export default {
             margin-right: 10px;
             border-radius: 50%;
             overflow: hidden;
-            background: #30b9c3;
+            // background: #30b9c3;
         }
         .name {
             flex: 1;
@@ -212,6 +242,10 @@ export default {
         .good-job-o {
             color: #6c7b8a;
         }
+    }
+    .van-image {
+        max-height: 300px;
+        overflow: hidden;
     }
 }
 </style>

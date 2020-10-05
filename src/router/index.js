@@ -29,6 +29,21 @@ const routes = [
         component: () => import('../views/Topic.vue')
     },
     {
+        path: '/topic',
+        name: 'tpic',
+        component: () => import('../views/Topic.vue')
+    },
+    {
+        path: '/article-list',
+        name: 'ArticleList',
+        component: () => import('../views/ArticleList.vue')
+    },
+    {
+        path: '/album-list',
+        name: 'AlbumList',
+        component: () => import('../views/AlbumList.vue')
+    },
+    {
         path: '/message-list',
         name: 'MessageList',
         component: () => import('../views/MessageList.vue'),
@@ -39,6 +54,11 @@ const routes = [
         name: 'My',
         component: () => import('../views/My.vue'),
         beforeEnter: authFilter
+    },
+    {
+        path: '/user-page/:id',
+        name: 'UserPage',
+        component: () => import('../views/UserPage.vue')
     },
     {
         path: '/edit-user',
