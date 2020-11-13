@@ -12,6 +12,7 @@
                 <Article-list :get-list="getTalk" :type="2" />
             </tab>
         </tabs>
+        <p class="beian">粤ICP备2020099300号</p>
         <basic-footer />
     </div>
 </template>
@@ -149,5 +150,11 @@ export default {
     background: #202528;
 }
 .tab {
+}
+.beian {
+    text-align: center;
+    font-size: 28px;
+    color: #888;
+    margin-bottom: 20px;
 }
 </style>

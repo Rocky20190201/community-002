@@ -141,6 +141,7 @@ export default {
         async getUserData () {
             const User = AV.Object.createWithoutData('_User', AV.User.current().id)
             await User.fetch().then(data => {
+                console.log(data.get('likeList'))
                 this.userLikeList = data.get('likeList')
                 this.userWatchList = data.get('watchList')
             })

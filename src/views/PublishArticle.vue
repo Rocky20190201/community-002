@@ -13,6 +13,8 @@
 <script>
 import { Field, Button } from 'vant'
 import AV from 'leancloud-storage'
+import permission from '../utils/permission'
+
 
 export default {
     name: 'publish-article',
@@ -33,6 +35,7 @@ export default {
     async created () {
     },
     mounted () {
+        if (window.plus) permission.requestAndroidPermission('android.permission.READ_EXTERNAL_STORAGE') // 外部存储(含相册)读取权限
     },
     methods: {
         afterRead () {},

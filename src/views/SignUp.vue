@@ -73,7 +73,7 @@ export default {
             loginLoading: false,
             valuePwd: '',
             valuePwdTow: '',
-            checked: true
+            checked: false
         }
     },
     computed: {
@@ -93,6 +93,10 @@ export default {
     methods: {
         async submitButton () {
             const password = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,16}$/
+            if (!this.checked) {
+                this.$toast('请阅读并同意《隐私政策》与《用户协议》')
+                return false
+            }
             if (password.test(this.valuePwd)) {
                 this.loginLoading = true
                 const user = new AV.User()

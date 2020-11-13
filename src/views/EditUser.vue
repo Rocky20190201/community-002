@@ -24,6 +24,7 @@
 <script>
 import { Field, Button, CellGroup, Uploader } from 'vant'
 import AV from 'leancloud-storage'
+import permission from '../utils/permission'
 
 export default {
     name: 'edit-user',
@@ -51,6 +52,7 @@ export default {
         await this.getUserData()
     },
     mounted () {
+        if (window.plus) permission.requestAndroidPermission('android.permission.READ_EXTERNAL_STORAGE') // 外部存储(含相册)读取权限
     },
     methods: {
         async getUserData () {

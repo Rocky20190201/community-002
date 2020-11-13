@@ -1,9 +1,9 @@
 <template>
     <div id="message-list">
         <van-row type="flex" justify="space-between" align="center" class="topic">
-            <router-link to=""><img src="../assets/message-bg-1.png" alt=""></router-link>
-            <router-link to=""><img src="../assets/message-bg-2.png" alt=""></router-link>
-            <router-link to=""><img src="../assets/message-bg-3.png" alt=""></router-link>
+            <router-link to=""><img @click="onClick" src="../assets/message-bg-1.png" alt=""></router-link>
+            <router-link to=""><img @click="onClick" src="../assets/message-bg-2.png" alt=""></router-link>
+            <router-link to=""><img @click="onClick" src="../assets/message-bg-3.png" alt=""></router-link>
         </van-row>
         <collapse v-model="activeNames" class="list" >
             <collapse-item title="系统消息" name="1" :is-link="false" class="item red">欢迎加入币心～</collapse-item>
@@ -32,6 +32,9 @@ export default {
     mounted () {
     },
     methods: {
+        onClick () {
+            this.$toast('板块即将开放，敬请期待')
+        }
     }
 }
 </script>
