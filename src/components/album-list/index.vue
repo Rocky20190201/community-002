@@ -11,37 +11,18 @@
                 <div v-for="item in listDataL" :key="item.id" @click="$router.push(`/details/1/${item.id}`)" class="item">
                     <div class="img-1"><van-image width="100%" fit="cover" lazy-load :src="item.imageList[0]" /></div>
                     <van-row @click.stop="$router.push(`/user-page/${item.userId }`)" type="flex" justify="space-between" align="center" class="name-time">
-                        <div><van-image fit="cover" round :src="item.userImage" class="avatar" /></div>
+                        <div><van-image fit="cover" :src="item.userImage" class="avatar" /></div>
                         <p class="name">{{ item.userName }}</p>
                         <p class="time">{{ format(item.updatedAt,'HH:mm') }}</p>
                     </van-row>
                     <p class="text van-multi-ellipsis--l3">{{ item.title }}</p>
-                    <van-row type="flex" justify="space-between" align="center" class="information">
+                    <van-row type="flex" align="center" class="information">
                         <div class="like" @click.stop="like(item)">
                             <van-icon v-if="!item.isLike" color="#6c7b8a" name="good-job-o" />
                             <van-icon v-else color="#30b9c3" name="good-job" />
                             &nbsp;{{ item.likeNumber }}</div>
                         <div class="comment"><van-icon color="#6c7b8a" name="chat-o" />&nbsp;0</div>
-                        <div class="read">{{ item.readNumber }}阅读</div>
-                    </van-row>
-                </div>
-            </div>
-            <div class="right">
-                <div v-for="item in listDataR" :key="item.id" @click="$router.push(`/details/1/${item.id}`)" class="item">
-                    <div class="img-1"><van-image width="100%" fit="cover" lazy-load :src="item.imageList[0]" /></div>
-                    <van-row @click.stop="$router.push(`/user-page/${item.userId }`)" type="flex" justify="space-between" align="center" class="name-time">
-                        <div><img :src="item.userImage" class="avatar"></div>
-                        <p class="name">{{ item.userName }}</p>
-                        <p class="time">{{ format(item.updatedAt,'HH:mm') }}</p>
-                    </van-row>
-                    <p class="text van-multi-ellipsis--l3">{{ item.title }}</p>
-                    <van-row type="flex" justify="space-between" align="center" class="information">
-                        <div class="like" @click.stop="like(item)">
-                            <van-icon v-if="!item.isLike" color="#6c7b8a" name="good-job-o" />
-                            <van-icon v-else color="#30b9c3" name="good-job" />
-                            &nbsp;{{ item.likeNumber }}</div>
-                        <div class="comment"><van-icon color="#6c7b8a" name="chat-o" />&nbsp;0</div>
-                        <div class="read">{{ item.readNumber }}阅读</div>
+                        <div class="read"><img style="width:13.5px" src="../../assets/read.png" alt="">{{ item.readNumber }}阅读</div>
                     </van-row>
                 </div>
             </div>
@@ -169,14 +150,18 @@ export default {
 </style>
 <style lang="scss" scoped>
 #album-list {
-    padding: 0 10px;
+    padding: 0;
 }
 .left,
 .right {
-    display: inline-block;
-    width: 345px;
-    margin: 0 10px;
+    margin-bottom: 10px;
     vertical-align: top;
+}
+.read{
+    img{
+        vertical-align: middle;
+        margin-right: 8px;
+    }
 }
 .item {
     // vertical-align: top;
@@ -184,7 +169,7 @@ export default {
     margin: 20px 0 0;
     background-color: #ffffff;
     box-shadow: 0px 5px 20px 0px rgba(50, 51, 94, 0.18);
-    border-radius: 20px;
+    // border-radius: 20px;
     overflow: hidden;
     .name-time {
         padding: 15px 15px 27px 15px;
@@ -193,7 +178,6 @@ export default {
             width: 60px;
             height: 60px;
             margin-right: 10px;
-            border-radius: 50%;
             overflow: hidden;
             // background: #30b9c3;
         }
@@ -241,6 +225,9 @@ export default {
         }
         .good-job-o {
             color: #6c7b8a;
+        }
+         >div{
+            margin-right: 40px;
         }
     }
     .van-image {

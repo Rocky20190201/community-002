@@ -286,7 +286,7 @@ export default {
             color: #999;
         }
         .label {
-            color: #7bc1ff;
+            color: #ebbc65;
             margin-right: 10px  ;
         }
         .button-box {
@@ -296,15 +296,15 @@ export default {
         .button {
             width: 136px;
             height: 48px;
-            background-color: #30b9c3;
+            background-color: #f7b233;
             border-radius: 24px;
-            border: solid 1px #30b9c3;
+            border: solid 1px #f7b233;
             font-size: 24px;
             color: #fff;
             line-height: 48px;
             &.active {
                 background-color: #fff;
-                color: #30b9c3;
+                color: #f7b233;
             }
         }
     }

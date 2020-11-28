@@ -2,6 +2,12 @@
     <div id="topic">
         <search class="search" v-model="keys" shape="round" placeholder="请输入想要搜索的影集" @search="$router.push(`/album-list?keys=${keys}`)" />
         <van-row type="flex" justify="space-between" align="center" class="list">
+            <div>
+                <router-link :to="`/topic-square`">
+                    <div><van-image fit="cover" round :src="require('../assets/add2.png')" class="img" /></div>
+                    <p>话题广场</p>
+                </router-link>
+            </div>
             <div v-for="item in userList" :key="item.id" class="item">
                 <router-link :to="`/user-page/${item.id }`">
                     <div><van-image fit="cover" round :src="item.userImage" class="img" /></div>
@@ -87,24 +93,24 @@ export default {
 #topic {
     .search {
         .van-search__content {
-            background: #424e55;
+            // background: #dbdbdb;
         }
         .van-field__left-icon .van-icon {
-            color: #fff;
+            // color: #fff;
         }
         .van-field__control {
-            color: #Fff;
+            // color: #Fff;
         }
     }
 }
 </style>
 <style lang="scss" scoped>
 .search {
-    background: #202528;
+    background: #fff;
 }
 .list {
     padding: 30px 40px;
-    background: #202528;
+    background: #fff;
     line-height: 1;
     .img {
         width: 90px;
@@ -116,7 +122,7 @@ export default {
     p {
         margin-top: 10px;
         font-size: 22px;
-        color: #fff;
+        color: #202528;
         text-align: center;
     }
 }

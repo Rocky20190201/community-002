@@ -24,6 +24,16 @@ const routes = [
         component: () => import('../views/Home.vue')
     },
     {
+        path: '/topic-square',
+        name: 'topic-square',
+        component: () => import('../views/Topic-square.vue')
+    },
+    {
+        path: '/topic-squareItem',
+        name: 'topic-squareItem',
+        component: () => import('../views/Topic-squareItem.vue')
+    },
+    {
         path: '/topic',
         name: 'tpic',
         component: () => import('../views/Topic.vue')

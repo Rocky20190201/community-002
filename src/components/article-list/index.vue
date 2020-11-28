@@ -8,6 +8,23 @@
             @load="onLoad"
         >
             <template v-if="listData.lenght !== 0">
+                <div v-if="type === 1">
+                    <img class="recommend_img" src="../../assets/recommend.png" alt="">
+                    <div class="tui_img">
+                        <div>
+                            <img src="../../assets/tuijian1.png" alt="">
+                            <p>#女性如何在婚姻中保持自我#</p>
+                        </div>
+                        <div>
+                            <img src="../../assets/tuijian2.png" alt="">
+                            <p>#用周杰伦专辑命名5亿年前三叶虫#</p>
+                        </div>
+                        <div>
+                            <img src="../../assets/tuijian3.png" alt="">
+                            <p>#用周杰伦专辑命名5亿年前三叶虫#</p>
+                        </div>
+                    </div>
+                </div>
                 <div v-for="item in listData" :key="item.id" @click="$router.push(`/details/${type}/${item.id}`)" class="item">
                     <van-row type="flex" align="center" class="name-time">
                         <div @click.stop="$router.push(`/user-page/${item.userId }`)"><van-image fit="cover" :src="item.userImage" class="avatar" /></div>
@@ -15,26 +32,25 @@
                             <p class="name">{{ item.userName }}</p>
                             <p class="time">{{ format(item.updatedAt,'YYYY-MM-dd HH:mm') }}</p>
                         </div>
-                        <div v-if="item.userId !== userId && isShowWatch" class="attention" @click.stop="watch(item)">
+                        <div v-if="item.userId !== userId && isShowWatch && type !==0" class="attention" @click.stop="watch(item)">
                             <span v-if="item.isWatch" class="active">已关注</span>
                             <span v-else >关注</span>
                         </div>
-                    </van-row>
-                    <p class="text van-multi-ellipsis--l2">{{ repalceHtml(item.content) }}</p>
-                    <div v-if="type === 0 && imgUrlFun(item.content)" class="img-1">
+                    </van-row><div v-if="type !==2  && imgUrlFun(item.content)" class="img-1">
                         <van-image width="100%" lazy-load :src="imgUrlFun(item.content)" />
                         <!-- <img :src="imgUrlFun(item.content)" alt=""> -->
                     </div>
                     <van-row v-else tyep="flex" class="imgs">
                         <van-image v-for="imgItem in item.imageList" :key="imgItem" class="img" fit="cover" lazy-load :src="imgItem" />
                     </van-row>
-                    <van-row type="flex" justify="space-between" align="center" class="information">
+                    <p class="text van-multi-ellipsis--l2">{{ repalceHtml(item.content) }}</p>
+                    <van-row type="flex"  align="center" class="information">
                         <div class="like" @click.stop="like(item)">
                             <van-icon v-if="!item.isLike" color="#6c7b8a" name="good-job-o" />
                             <van-icon v-else color="#30b9c3" name="good-job" />
                             &nbsp;{{ item.likeNumber }}点赞</div>
                         <div class="comment"><van-icon color="#6c7b8a" name="chat-o" />&nbsp;0评论</div>
-                        <div class="read">{{ item.readNumber }}阅读</div>
+                        <div class="read"><img style="width:13.5px" src="../../assets/read.png" alt="">{{ item.readNumber }}阅读</div>
                     </van-row>
                 </div>
             </template>
@@ -198,19 +214,50 @@ export default {
 <style lang="scss">
 </style>
 <style lang="scss" scoped>
+.recommend_img{
+    width: 100%;
+    margin-top: 20px;
+}
+.tui_img{
+    display:flex;
+    >div{
+        position: relative;
+        display: flex;
+        align-items: center;
+        margin: 20px;
+        width: 207px;
+        height: 136px;
+        color: #fff;
+        p{
+            opacity: .7;
+        }
+    }
+    img{
+        width: 207px;
+        position: absolute;
+        top: 0;
+        z-index: -1;
+    }
+}
+.read{
+    img{
+        vertical-align: middle;
+        margin-right: 8px;
+    }
+}
 .item {
-    margin: 20px;
+    margin-top: 20px;
     background-color: #ffffff;
     box-shadow: 0px 5px 20px 0px rgba(50, 51, 94, 0.18);
-    border-radius: 20px;
+    // border-radius: 20px;
     .name-time {
         padding: 40px 40px 27px 40px;
         .avatar {
             display: block;
-            width: 60px;
-            height: 60px;
+            width: 67px;
+            height: 67px;
             margin-right: 30px;
-            border-radius: 50%;
+            border-radius: 5px;
             overflow: hidden;
             // background: #30b9c3;
         }
@@ -230,17 +277,17 @@ export default {
                 display: inline-block;
                 width: 136px;
                 height: 48px;
-                background-color: #30b9c3;
+                background-color: #f7b233;
                 border-radius: 24px;
-                border: solid 1px #30b9c3;
+                border: solid 1px #f7b233;
                 font-size: 24px;
                 color: #fff;
                 text-align: center;
                 line-height: 48px;
             }
             .active {
-                background: #fff;
-                color: #30b9c3;
+                background: #f7b233;
+                color: #fff;
             }
         }
 
@@ -275,6 +322,9 @@ export default {
         }
         .good-job-o {
             color: #6c7b8a;
+        }
+        >div{
+            margin-right: 40px;
         }
     }
 }

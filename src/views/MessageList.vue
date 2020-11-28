@@ -8,6 +8,13 @@
         <collapse v-model="activeNames" class="list" >
             <collapse-item title="系统消息" name="1" :is-link="false" class="item red">欢迎加入币心～</collapse-item>
         </collapse>
+        <!-- <van-list
+            v-model="loading"
+            :finished="finished"
+            finished-text="没有更多了"
+            @load="onLoad">
+            <van-cell v-for="item in list" :key="item" :title="item" />
+        </van-list> -->
         <basic-footer />
     </div>
 </template>

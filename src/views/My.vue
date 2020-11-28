@@ -3,11 +3,11 @@
         <div class="bg" />
         <user-info :user-id="userId" />
         <tabs class="tab" v-model="active" color="#30b9c3" background="#fff" title-inactive-color="#000" title-active-color="#000" sticky swipeable animated >
-            <tab title="作品">
+            <tab title="动态">
                 <!-- <album-list /> -->
                 <article-list :get-list="getRecommend" :type="0" />
             </tab>
-            <tab title="影集">
+            <tab title="作品">
                 <album-list :get-list="getAlbumList" />
             </tab>
             <tab title="说说">

@@ -3,31 +3,31 @@
         <tabbar route fixed border placeholder>
             <tabbar-item to="/home">
                 <template #icon="props">
-                    <img class="icon-img" :src="props.active ? require('../../assets/icon-home-tab-1-active.png') : require('../../assets/icon-home-tab-1.png')" />
+                    <img class="icon-img" :src="props.active ? require('../../assets/icon1.png') : require('../../assets/icon1.png')" />
                 </template>
                 <span>首页</span>
             </tabbar-item>
             <tabbar-item to="/topic">
                 <template #icon="props">
-                    <img class="icon-img" :src="props.active ? require('../../assets/icon-home-tab-2-active.png') : require('../../assets/icon-home-tab-2.png')" />
+                    <img class="icon-img" :src="props.active ? require('../../assets/icon2.png') : require('../../assets/icon2.png')" />
                 </template>
-                <span>影集</span>
+                <span>圈子</span>
             </tabbar-item>
             <tabbar-item @click="showActionSheet = true">
                 <template>
-                    <img class="icon-img-2" src="../../assets/icon-home-tab-5.png" />
+                    <img class="icon-img-2" src="../../assets/add1.png" />
                 </template>
             <!-- <span>我要赚钱</span> -->
             </tabbar-item>
             <tabbar-item to="/message-list">
                 <template #icon="props">
-                    <img class="icon-img" :src="props.active ? require('../../assets/icon-home-tab-3-active.png') : require('../../assets/icon-home-tab-3.png')" />
+                    <img class="icon-img" :src="props.active ? require('../../assets/icon3.png') : require('../../assets/icon3.png')" />
                 </template>
                 <span>消息</span>
             </tabbar-item>
             <tabbar-item to="/my">
                 <template #icon="props">
-                    <img class="icon-img" :src="props.active ? require('../../assets/icon-home-tab-4-active.png') : require('../../assets/icon-home-tab-4.png')" />
+                    <img class="icon-img" :src="props.active ? require('../../assets/icon4.png') : require('../../assets/icon4.png')" />
                 </template>
                 <span>我的</span>
             </tabbar-item>
@@ -97,7 +97,7 @@ export default {
     }
     .van-tabbar-item--active {
         .van-tabbar-item__text {
-            color: #30b9c3;
+            color: #f7b233;
         }
     }
 }
@@ -105,8 +105,8 @@ export default {
 <style lang="scss" scoped>
 .icon-img {
     display: inline-block;
-    max-width: 35px;
-    max-height: 35px;
+    max-width: 41px;
+    max-height: 41px;
     height: auto;
 }
 .icon-img-2 {

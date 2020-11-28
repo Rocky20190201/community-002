@@ -1,12 +1,12 @@
 <template>
     <div id="home">
         <search class="search" v-model="keys" shape="round" placeholder="搜索你感兴趣的内容和用户" @search="$router.push(`/article-list?keys=${keys}`)" />
-        <tabs class="tab" v-model="active" color="#30b9c3" background="#202528" title-inactive-color="#bfc0c3" title-active-color="#bfc0c3" sticky swipeable animated >
+        <tabs class="tab" v-model="active" color="#f7b233" background="#ffffff" title-inactive-color="#333333" title-active-color="#f7b233" sticky swipeable animated >
             <tab title="关注">
                 <Article-list :get-list="getAttention" :type="0"/>
             </tab>
             <tab title="推荐">
-                <Article-list :get-list="getRecommend" :type="0" />
+                <Article-list :get-list="getRecommend" :type="1" />
             </tab>
             <tab title="说说">
                 <Article-list :get-list="getTalk" :type="2" />
@@ -122,13 +122,14 @@ export default {
 #home {
     .search {
         .van-search__content {
-            background: #424e55;
+            // background: #dbdbdb;
+            // opacity: 0.38;
         }
         .van-field__left-icon .van-icon {
-            color: #fff;
+            // color: #fff;
         }
         .van-field__control {
-            color: #Fff;
+            // color: #Fff;
         }
     }
     .van-hairline--top-bottom::after {
@@ -147,14 +148,14 @@ export default {
 </style>
 <style lang="scss" scoped>
 .search {
-    background: #202528;
+    background: #ffffff;
 }
 .tab {
 }
 .beian {
     text-align: center;
     font-size: 28px;
-    color: #888;
+    color: #dbdbdb;
     margin-bottom: 20px;
 }
 </style>
