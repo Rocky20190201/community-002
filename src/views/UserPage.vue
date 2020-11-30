@@ -3,7 +3,7 @@
         <van-nav-bar fixed left-arrow @click-left="$router.go(-1)" placeholder title="用户信息" />
         <div class="bg" />
         <user-info :user-id="userId" />
-        <tabs class="tab" v-model="active" color="#30b9c3" background="#fff" title-inactive-color="#000" title-active-color="#000" sticky swipeable animated >
+        <tabs class="tab" v-model="active" color="#f7b233" background="#ffffff" title-inactive-color="#333333" title-active-color="#f7b233" sticky swipeable animated >
             <tab title="动态">
                 <!-- <album-list /> -->
                 <article-list :get-list="getRecommend" :is-show-watch="false" :type="0" />
@@ -130,7 +130,8 @@ export default {
     top: 0;
     left: 0;
     width: 100%;
-    height: 230px;
-    background: #202528;
+    height: 276px;
+    background: url('../assets/user-top.png') no-repeat;
+    background-size: 100% 100%;
 }
 </style>

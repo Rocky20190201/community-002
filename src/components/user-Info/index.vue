@@ -1,17 +1,20 @@
 <template>
     <div id="user-Info">
         <div v-if="!isShowAttention" class="set"><router-link to="/set"><van-icon name="setting-o" /></router-link></div>
-        <van-row type="flex" justify="space-between" align="center" class="name-message-avatar" @click="edit">
+        <van-row class="name-message-avatar" @click="edit">
             <div><van-image fit="cover" round  :src="userData.userImage" class="avatar" /></div>
             <div class="name-message">
                 <div>
-                    <field v-model="userData.userName" ref="userName" placeholder="点击编辑用户名" readonly class="name" />
+                    <field v-model="userData.userName" input-align="center" ref="userName" placeholder="点击编辑用户名" readonly class="name" />
                 </div>
-                <div>
-                    <field v-model="userData.remarks" placeholder="点击编辑个性签名" readonly  class="message" />
+                <div class="name-edit">
+                    <div v-if="userData.remarks">
+                        {{userData.remarks}}
+                    </div>
+                    <div v-else>点击编辑个性签名</div>
+                    <div v-if="!isShowAttention" @click="edit"><img src="../../assets/edit.png" maxlength="10" class="edit" /></div>
                 </div>
             </div>
-            <div v-if="!isShowAttention" @click="edit"><img src="../../assets/edit.png" maxlength="10" class="edit" /></div>
         </van-row>
         <van-row type="flex" justify="space-between" align="center" class="information">
             <div class="item">
@@ -136,13 +139,17 @@ export default {
 #user-Info {
     position: relative;
     z-index: 1;
-    margin: 70px 20px 20px;
-    background-color: #ffffff;
-    box-shadow: 0px 5px 20px 0px rgba(50, 51, 94, 0.18);
-    border-radius: 20px;
+    margin: 60px 0 20px;
 }
 .name-message-avatar {
     padding: 60px 34px 39px;
+    text-align: center;
+    .name-edit{
+        display: flex;
+        color: #6c7b8a;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
     .name-message {
         padding: 0;
         flex: 1;
@@ -162,13 +169,18 @@ export default {
         color: #6c7b8a;
     }
     .edit {
-        width: 32px;
         vertical-align: middle;
-        margin-left: 10px;
+        width: 32px;
+        margin-left: 25px;
     }
 }
 .information {
+    width: 709px;
+    height: 100px;
+    margin: 0 20px;
     padding-bottom: 21px;
+    background-color: #f4f4f4;
+    border-radius: 20px;
     .item {
         width: 33.33%;
         text-align: center;
@@ -184,13 +196,13 @@ export default {
     position: relative;
     z-index: 2;
     padding: 30px 0;
-    box-shadow: 0px 5px 20px 0px rgba(12, 197, 207, 0.18);
+    border-bottom: 10px solid #f3f3f3;
     .button {
         width: 50%;
         height: 48px;
         margin: auto;
-        border: solid 1px #30b9c3;
-        background-color: #30b9c3;
+        border: solid 1px #f7b233;
+        background-color: #f7b233;
         border-radius: 24px;
         font-size: 24px;
         color: #fff;
@@ -199,7 +211,7 @@ export default {
         letter-spacing: 3px;
         &.active {
             background: #fff;
-            color: #30b9c3;
+            color: #f7b233;
         }
     }
 }

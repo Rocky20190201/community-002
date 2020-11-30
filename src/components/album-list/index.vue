@@ -9,21 +9,27 @@
         >
             <div class="left">
                 <div v-for="item in listDataL" :key="item.id" @click="$router.push(`/details/1/${item.id}`)" class="item">
-                    <div class="img-1"><van-image width="100%" fit="cover" lazy-load :src="item.imageList[0]" /></div>
-                    <van-row @click.stop="$router.push(`/user-page/${item.userId }`)" type="flex" justify="space-between" align="center" class="name-time">
-                        <div><van-image fit="cover" :src="item.userImage" class="avatar" /></div>
-                        <p class="name">{{ item.userName }}</p>
-                        <p class="time">{{ format(item.updatedAt,'HH:mm') }}</p>
-                    </van-row>
-                    <p class="text van-multi-ellipsis--l3">{{ item.title }}</p>
-                    <van-row type="flex" align="center" class="information">
-                        <div class="like" @click.stop="like(item)">
-                            <van-icon v-if="!item.isLike" color="#6c7b8a" name="good-job-o" />
-                            <van-icon v-else color="#30b9c3" name="good-job" />
-                            &nbsp;{{ item.likeNumber }}</div>
-                        <div class="comment"><van-icon color="#6c7b8a" name="chat-o" />&nbsp;0</div>
-                        <div class="read"><img style="width:13.5px" src="../../assets/read.png" alt="">{{ item.readNumber }}阅读</div>
-                    </van-row>
+                <van-row type="flex" justify="space-between" align="center">
+                    <div class="content">
+                        <van-row @click.stop="$router.push(`/user-page/${item.userId }`)" type="flex" align="center" class="name-time">
+                            <div><van-image fit="cover" :src="item.userImage" class="avatar" /></div>
+                            <div class="Name-date">
+                                <p class="name" style="font-size: 16px">{{ item.userName }}</p>
+                                <span style="font-size: 10px" class="time">{{ format(item.updatedAt, 'HH:mm') }}</span>
+                            </div>
+                        </van-row>
+                        <p class="text van-multi-ellipsis--l3">{{ item.title }}</p>
+                        <van-row type="flex" align="center" class="information">
+                            <div class="like" @click.stop="like(item)">
+                                <van-icon v-if="!item.isLike" color="#6c7b8a" name="good-job-o" />
+                                <van-icon v-else color="#30b9c3" name="good-job" />
+                                &nbsp;{{ item.likeNumber }}</div>
+                                <div class="comment"><van-icon color="#6c7b8a" name="chat-o" />&nbsp;0</div>
+                            <div class="read"><img style="width:13.5px" src="../../assets/read.png" alt="">{{ item.readNumber }}阅读</div>
+                        </van-row>
+                    </div>
+                    <div class="img-1"><van-image width="126px" fit="cover" lazy-load :src="item.imageList[0]" /></div>
+                </van-row>
                 </div>
             </div>
         </list>
@@ -33,7 +39,7 @@
 
 <script>
 import { List, PullRefresh, Empty } from 'vant'
-import { format } from '../../utils/index'
+import { format, dateStr } from '../../utils/index'
 import AV from 'leancloud-storage'
 
 export default {
@@ -73,6 +79,9 @@ export default {
         }
     },
     methods: {
+        dateStr (date) {
+            return dateStr(date)
+        },
         format (date, fmt) {
             return format(date, fmt)
         },
@@ -151,6 +160,12 @@ export default {
 <style lang="scss" scoped>
 #album-list {
     padding: 0;
+}
+.Name-date{
+    margin-left: 10px;
+}
+.content{
+    width: 60%;
 }
 .left,
 .right {

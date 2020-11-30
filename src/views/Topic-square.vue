@@ -5,7 +5,7 @@
         </div>
         <div class="topic-square">
                 <div  class="topic-item" v-for="item in imgList" :key="item.title">
-                    <router-link :to="`/topic-squareItem`">
+                    <router-link :to="`/topic-squareItem/${item.name}`">
                         <img :src="item.img" class="img" alt="">
                     </router-link>
                     <span>{{item.title}}</span>
@@ -26,41 +26,53 @@ export default {
     },
     created () {
         this.imgList = [{
-               title: '推荐',
-               img: require('../assets/topic1.png')
+                name: 'tj',
+                title: '推荐',
+                img: require('../assets/topic1.png')
             }, {
-               title: '关注',
-               img: require('../assets/topic2.png')
+                name: 'gz',
+                title: '关注',
+                img: require('../assets/topic2.png')
             }, {
-               title: '影像',
-               img: require('../assets/topic3.png')
+                name: 'yx',
+                title: '影像',
+                img: require('../assets/topic3.png')
             }, {
-               title: '旅行',
-               img: require('../assets/topic4.png')
+                name: 'ly',
+                title: '旅行',
+                img: require('../assets/topic4.png')
             }, {
-               title: '情感',
-               img: require('../assets/topic5.png')
+                name: 'qg',
+                title: '情感',
+                img: require('../assets/topic5.png')
             }, {
-               title: '文学',
-               img: require('../assets/topic6.png')
+                name: 'wx',
+                title: '文学',
+                img: require('../assets/topic6.png')
             }, {
-               title: '生活',
-               img: require('../assets/topic7.png')
+                name: 'sh',
+                title: '生活',
+                img: require('../assets/topic7.png')
             }, {
-               title: '思想',
-               img: require('../assets/topic8.png')
+                name: 'sx',
+                title: '思想',
+                img: require('../assets/topic8.png')
             }, {
-               title: '爱好',
-               img: require('../assets/topic9.png')
+                name: 'ah',
+                title: '爱好',
+                img: require('../assets/topic9.png')
             }, {
-               title: '教师节',
-               img: require('../assets/topic10.png')
+                name: 'jsj',
+                title: '教师节',
+                img: require('../assets/topic10.png')
             }, {
-               title: '职业',
-               img: require('../assets/topic11.png')
+                name: 'zy',
+                title: '职业',
+                img: require('../assets/topic11.png')
             }, {
-               title: '美篇',
-               img: require('../assets/topic12.png')
+                name: 'mp',
+                title: '美篇',
+                img: require('../assets/topic12.png')
             }]
     },
     mounted () {

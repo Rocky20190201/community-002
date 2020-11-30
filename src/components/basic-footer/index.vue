@@ -51,9 +51,9 @@ export default {
             active: 0,
             showActionSheet: false,
             options: [
-                { name: '文章', icon: require('../../assets/wenzhang.png') },
-                { name: '影集', icon: require('../../assets/yingji.png') },
-                { name: '说说', icon: require('../../assets/shuoshuo.png') }
+                { name: '文章', icon: require('../../assets/wz.png') },
+                { name: '影集', icon: require('../../assets/yj.png') },
+                { name: '说说', icon: require('../../assets/ss.png') }
             ]
         }
     },

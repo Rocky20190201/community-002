@@ -29,7 +29,7 @@ const routes = [
         component: () => import('../views/Topic-square.vue')
     },
     {
-        path: '/topic-squareItem',
+        path: '/topic-squareItem/:title',
         name: 'topic-squareItem',
         component: () => import('../views/Topic-squareItem.vue')
     },

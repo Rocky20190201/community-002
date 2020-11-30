@@ -8,7 +8,10 @@
                 left-arrow
             />
             <div class="content">
-                <h1>登陆</h1>
+                <div class="login-h1">
+                    <div class="h1-top"><h1>登陆</h1></div>
+                    <div class="h1-bootm"></div>
+                </div>
                 <div class="content-inner">
                     <div class="label-input">
                         <label class="label">账号</label>
@@ -29,7 +32,7 @@
                     </div>
                     <router-link to="/password-reset" class="forgotPwd">忘记密码?</router-link>
                 </div>
-                <Button color="#30b9c3"
+                <Button color="#f7b233"
                     :disabled="!(phoneTest && valuePwd)"
                     @click="submitButton"
                     :loading="loginLoading"
@@ -38,7 +41,7 @@
                     type="primary"
                     class="button">登陆</Button>
                 <van-row type="flex" align="center" justify="center" class="tipsBox">
-                    <checkbox v-model="checked" checked-color="#30b9c3" icon-size="0.38rem" class="checkbox" />
+                    <checkbox v-model="checked" checked-color="#f7b233" icon-size="0.38rem" class="checkbox" />
                     <p>我已阅读并同意<router-link class="privacy" to="/privacy">《隐私政策》</router-link>与<router-link class="privacy" to="/agreement">《用户协议》</router-link></p>
                 </van-row>
                 <p class="switchPage"><router-link to="/sign-up">没有账号去注册</router-link></p>
@@ -124,24 +127,55 @@ export default {
 </style>
 <style scoped lang="scss">
 #login{
-    height: 100%;
+    height: 100vh;
     background: url('../assets/login-bg.png') no-repeat;
     background-size: 100% 100%;
     // padding-left: 20px;
     // padding-right: 20px;
 }
 .content {
-    margin: 240px 47px 100px;
+    margin: 140px 47px 100px;
     background-color: #ffffff;
     box-shadow: 0px 20px 20px 0pxrgba(0, 0, 0, 0.08);
     border-radius: 13px;
     padding: 37px 65px;
 }
-h1 {
-    margin-bottom: 90px;
-    font-size: 44px;
-    color: #262628;
+.login-h1{
+    position: relative;
+    width: 200px;
+    height: 180px;
+    margin: -150px auto 0;
+    border-radius: 40px;
+    box-shadow: 0px 15px 40px 0 rgba(90, 69, 210, 0.28);
+    .h1-top{
+        position: absolute;
+        top: 0;
+        width: 200px;
+        height: 180px;
+        z-index: 10;
+        line-height: 180px;
+        text-align: center;
+        border-radius: 40px;
+        background-color: #f7b233;
+    }
+    .h1-bootm{
+        position: absolute;
+        top: 0;
+        width: 200px;
+        height: 180px;
+        transform: rotate(50deg);
+        text-align: center;
+        border-radius: 40px;
+        background-color: #e0c9a0;
+        opacity: .4;
+    }
+    h1 {
+        margin-bottom: 90px;
+        font-size: 44px;
+        color: white;
+    }
 }
+
 .label-input {
     margin-bottom: 24px;
     .label {
@@ -172,7 +206,7 @@ h1 {
         margin-right: 5px;
     }
     a {
-        color: #4990e2;
+        color: #f7b233;
     }
 }
 .switchPage {
