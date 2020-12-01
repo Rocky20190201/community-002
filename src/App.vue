@@ -26,7 +26,7 @@
 </template>
 
 <script>
-// import AV from 'leancloud-storage'
+import AV from 'leancloud-storage'
 import { Notify } from 'vant'
 export default {
     name: 'app',
@@ -53,7 +53,7 @@ export default {
     },
     created () {
         // !AV.User.current()
-        if (Number(window.performance.navigation.type) !== 1) {
+        if (Number(window.performance.navigation.type) !== 1 && !AV.User.current()) {
             this.visible = false
             // console.log('首次被加载')
         } else {
